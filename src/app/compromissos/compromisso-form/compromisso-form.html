@@ -1,0 +1,41 @@
+<div class="page">
+  <h2>{{ id ? 'Editar' : 'Novo' }} Compromisso</h2>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-group">
+      <label>Título</label>
+      <input formControlName="title" />
+    </div>
+    <div class="form-group">
+      <label>Descrição</label>
+      <textarea formControlName="description" rows="2"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data/Hora</label>
+        <input type="datetime-local" formControlName="scheduledAt" />
+      </div>
+      <div class="form-group">
+        <label>Local</label>
+        <input formControlName="location" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Responsável</label>
+        <input formControlName="responsible" />
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select formControlName="status">
+          <option value="AGENDADO">Agendado</option>
+          <option value="REALIZADO">Realizado</option>
+          <option value="CANCELADO">Cancelado</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn-primary">Salvar</button>
+      <button type="button" (click)="router.navigate(['/compromissos'])">Cancelar</button>
+    </div>
+  </form>
+</div>

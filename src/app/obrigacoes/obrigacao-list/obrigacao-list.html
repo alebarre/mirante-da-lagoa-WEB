@@ -1,0 +1,23 @@
+<div class="page">
+  <h2>📋 Obrigações Trabalhistas</h2>
+  <button class="btn-primary" (click)="newItem()">Nova Obrigação</button>
+  <div class="error" *ngIf="error">{{ error }}</div>
+  <table class="data-table" *ngIf="!loading">
+    <thead>
+      <tr><th>Nome</th><th>Periodicidade</th><th>Vencimento</th><th>Responsável</th><th>Status</th><th>Ações</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item.name }}</td>
+        <td>{{ item.periodicity }}</td>
+        <td>{{ item.dueDate | date:'dd/MM/yyyy' }}</td>
+        <td>{{ item.responsible || '-' }}</td>
+        <td>{{ item.status || '-' }}</td>
+        <td class="actions">
+          <button (click)="edit(item.id)">Editar</button>
+          <button class="btn-danger" (click)="remove(item.id)">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

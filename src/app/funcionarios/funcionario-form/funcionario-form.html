@@ -1,0 +1,96 @@
+<div class="page">
+  <h2>{{ id ? 'Editar' : 'Novo' }} Funcionário</h2>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nome completo</label>
+        <input formControlName="fullName" />
+      </div>
+      <div class="form-group">
+        <label>CPF</label>
+        <input formControlName="cpf" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>RG</label>
+        <input formControlName="rg" />
+      </div>
+      <div class="form-group">
+        <label>Data de nascimento</label>
+        <input type="date" formControlName="birthDate" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Telefone</label>
+        <input formControlName="phone" />
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" formControlName="email" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Endereço</label>
+      <input formControlName="address" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Cargo</label>
+        <input formControlName="position" />
+      </div>
+      <div class="form-group">
+        <label>Departamento</label>
+        <input formControlName="department" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data de admissão</label>
+        <input type="date" formControlName="hireDate" />
+      </div>
+      <div class="form-group">
+        <label>Data de demissão</label>
+        <input type="date" formControlName="terminationDate" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Salário</label>
+        <input type="number" formControlName="salary" />
+      </div>
+      <div class="form-group">
+        <label>Regime</label>
+        <select formControlName="workRegime">
+          <option value="">Selecione</option>
+          <option value="CLT">CLT</option>
+          <option value="PJ">PJ</option>
+          <option value="ESTAGIARIO">Estagiário</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Dados bancários</label>
+      <input formControlName="bankAccount" />
+    </div>
+
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea formControlName="notes" rows="3"></textarea>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn-primary">Salvar</button>
+      <button type="button" (click)="router.navigate(['/funcionarios'])">Cancelar</button>
+    </div>
+  </form>
+</div>

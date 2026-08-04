@@ -1,0 +1,65 @@
+<div class="page">
+  <h2>{{ id ? 'Editar' : 'Novo' }} Evento</h2>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-group">
+      <label>Título</label>
+      <input formControlName="title" />
+    </div>
+    <div class="form-group">
+      <label>Descrição</label>
+      <textarea formControlName="description" rows="2"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Início</label>
+        <input type="datetime-local" formControlName="startAt" />
+      </div>
+      <div class="form-group">
+        <label>Término</label>
+        <input type="datetime-local" formControlName="endAt" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Local</label>
+        <select formControlName="location">
+          <option value="">Selecione</option>
+          <option value="Salão de festas">Salão de festas</option>
+          <option value="Piscina">Piscina</option>
+          <option value="Área comum">Área comum</option>
+          <option value="Churrasqueira">Churrasqueira</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Organizador</label>
+        <input formControlName="organizer" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select formControlName="status">
+          <option value="AGENDADO">Agendado</option>
+          <option value="CONFIRMADO">Confirmado</option>
+          <option value="CANCELADO">Cancelado</option>
+          <option value="REALIZADO">Realizado</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Máx. participantes</label>
+        <input type="number" formControlName="maxParticipants" />
+      </div>
+    </div>
+    <div class="form-group checkbox">
+      <label><input type="checkbox" formControlName="restrictedToResidents" /> Restrito a moradores</label>
+    </div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea formControlName="notes" rows="2"></textarea>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn-primary">Salvar</button>
+      <button type="button" (click)="router.navigate(['/eventos'])">Cancelar</button>
+    </div>
+  </form>
+</div>

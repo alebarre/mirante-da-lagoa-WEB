@@ -1,0 +1,78 @@
+<div class="page">
+  <h2>{{ id ? 'Editar' : 'Novo' }} Morador</h2>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-group">
+      <label>Nome completo</label>
+      <input formControlName="fullName" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>CPF</label>
+        <input formControlName="cpf" />
+      </div>
+      <div class="form-group">
+        <label>RG</label>
+        <input formControlName="rg" />
+      </div>
+      <div class="form-group">
+        <label>Nascimento</label>
+        <input type="date" formControlName="birthDate" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Telefone</label>
+        <input formControlName="phone" />
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" formControlName="email" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Bloco</label>
+        <input formControlName="block" />
+      </div>
+      <div class="form-group">
+        <label>Apartamento</label>
+        <input formControlName="apartment" />
+      </div>
+      <div class="form-group">
+        <label>Vaga</label>
+        <input formControlName="parkingSpot" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Pets</label>
+        <input formControlName="pets" />
+      </div>
+      <div class="form-group checkbox">
+        <label><input type="checkbox" formControlName="owner" /> Proprietário</label>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Entrada</label>
+        <input type="date" formControlName="moveInDate" />
+      </div>
+      <div class="form-group">
+        <label>Saída</label>
+        <input type="date" formControlName="moveOutDate" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Contato de emergência</label>
+      <input formControlName="emergencyContact" />
+    </div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea formControlName="notes" rows="2"></textarea>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn-primary">Salvar</button>
+      <button type="button" (click)="router.navigate(['/moradores'])">Cancelar</button>
+    </div>
+  </form>
+</div>

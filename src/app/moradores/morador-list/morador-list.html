@@ -1,0 +1,23 @@
+<div class="page">
+  <h2>🏠 Moradores</h2>
+  <button class="btn-primary" (click)="newItem()">Novo Morador</button>
+  <div class="error" *ngIf="error">{{ error }}</div>
+  <table class="data-table" *ngIf="!loading">
+    <thead>
+      <tr><th>Nome</th><th>Bloco</th><th>Apartamento</th><th>Telefone</th><th>Proprietário</th><th>Ações</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item.fullName }}</td>
+        <td>{{ item.block }}</td>
+        <td>{{ item.apartment }}</td>
+        <td>{{ item.phone || '-' }}</td>
+        <td>{{ item.owner ? 'Sim' : 'Não' }}</td>
+        <td class="actions">
+          <button (click)="edit(item.id)">Editar</button>
+          <button class="btn-danger" (click)="remove(item.id)">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

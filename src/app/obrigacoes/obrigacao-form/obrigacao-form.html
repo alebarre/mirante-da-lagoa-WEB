@@ -1,0 +1,57 @@
+<div class="page">
+  <h2>{{ id ? 'Editar' : 'Nova' }} Obrigação Trabalhista</h2>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-group">
+      <label>Nome</label>
+      <input formControlName="name" />
+    </div>
+    <div class="form-group">
+      <label>Descrição</label>
+      <textarea formControlName="description" rows="2"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Periodicidade</label>
+        <select formControlName="periodicity">
+          <option value="MENSAL">Mensal</option>
+          <option value="TRIMESTRAL">Trimestral</option>
+          <option value="SEMESTRAL">Semestral</option>
+          <option value="ANUAL">Anual</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Vencimento</label>
+        <input type="date" formControlName="dueDate" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Concluído em</label>
+        <input type="date" formControlName="completedAt" />
+      </div>
+      <div class="form-group">
+        <label>Responsável</label>
+        <input formControlName="responsible" />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select formControlName="status">
+          <option value="PENDENTE">Pendente</option>
+          <option value="EM_DIA">Em dia</option>
+          <option value="ATRASADO">Atrasado</option>
+          <option value="CANCELADO">Cancelado</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea formControlName="notes" rows="2"></textarea>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn-primary">Salvar</button>
+      <button type="button" (click)="router.navigate(['/obrigacoes'])">Cancelar</button>
+    </div>
+  </form>
+</div>

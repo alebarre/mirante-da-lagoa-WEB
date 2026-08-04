@@ -1,0 +1,23 @@
+<div class="page">
+  <h2>📅 Compromissos</h2>
+  <button class="btn-primary" (click)="newItem()">Novo Compromisso</button>
+  <div class="error" *ngIf="error">{{ error }}</div>
+  <table class="data-table" *ngIf="!loading">
+    <thead>
+      <tr><th>Título</th><th>Data/Hora</th><th>Local</th><th>Responsável</th><th>Status</th><th>Ações</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item.title }}</td>
+        <td>{{ item.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ item.location || '-' }}</td>
+        <td>{{ item.responsible || '-' }}</td>
+        <td>{{ item.status || '-' }}</td>
+        <td class="actions">
+          <button (click)="edit(item.id)">Editar</button>
+          <button class="btn-danger" (click)="remove(item.id)">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

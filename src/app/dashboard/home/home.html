@@ -1,0 +1,32 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="brand">
+      <h3>Mirante da Lagoa</h3>
+      <small>Saquarema/RJ</small>
+    </div>
+
+    <nav class="menu">
+      <a *ngFor="let item of menu" [routerLink]="item.path" routerLinkActive="active">
+        <span class="icon">{{ item.icon }}</span> {{ item.label }}
+      </a>
+    </nav>
+
+    <div class="user-info">
+      <strong>{{ auth?.fullName }}</strong>
+      <small>{{ auth?.role }}</small>
+      <button (click)="logout()" class="btn-logout">Sair</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <h1>Bem-vindo, {{ auth?.fullName || 'Usuário' }}!</h1>
+    <p>Escolha uma opção no menu lateral para gerenciar o condomínio.</p>
+
+    <div class="cards">
+      <div class="card" *ngFor="let item of menu" [routerLink]="item.path">
+        <span class="card-icon">{{ item.icon }}</span>
+        <h4>{{ item.label }}</h4>
+      </div>
+    </div>
+  </main>
+</div>
