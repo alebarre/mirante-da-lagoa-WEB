@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Compromisso } from '../../core/models/compromisso.model';
@@ -13,14 +13,14 @@ export class CompromissoList implements OnInit {
   loading = false;
   error = '';
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(private api: ApiService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void { this.load(); }
   load(): void {
     this.loading = true;
     this.api.get<Compromisso[]>('/compromissos').subscribe({
-      next: data => { this.items = data; this.loading = false; },
-      error: err => { this.error = err.error?.message || 'Erro'; this.loading = false; }
+      next: data => { this.items = data; this.loading = false; this.cdr.detectChanges(); },
+      error: err => { this.error = err.error?.message || 'Erro'; this.loading = false; this.cdr.detectChanges(); }
     });
   }
   edit(id?: string): void { if (id) this.router.navigate(['/compromissos/edit', id]); }

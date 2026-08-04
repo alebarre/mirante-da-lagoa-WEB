@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <title>Test Funcionarios</title>
+  <script>
+    window.jsErrors = [];
+    window.jsLogs = [];
+    const origLog = console.log;
+    const origError = console.error;
+    console.log = function(...args) { window.jsLogs.push(args.join(' ')); origLog.apply(console, args); };
+    console.error = function(...args) { window.jsLogs.push('ERROR: ' + args.join(' ')); origError.apply(console, args); };
+    window.addEventListener('error', function(e) {
+      window.jsErrors.push({message: e.message, filename: e.filename, lineno: e.lineno, error: e.error?.toString()});
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      window.jsErrors.push({promise: e.reason?.toString(), reason: e.reason});
+    });
+
+    fetch('http://localhost:8080/api/auth/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email:'admin@mirantedalagoa.com.br', password:'admin123'})
+    })
+    .then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(auth => {
+      window.jsLogs.push('LOGIN OK');
+      localStorage.setItem('mirante_lagoa_auth', JSON.stringify(auth));
+      // Navegar dentro da SPA para /funcionarios sem recarregar
+      history.pushState(null, '', '/funcionarios');
+      window.dispatchEvent(new PopStateEvent('popstate', { state: null }));
+    })
+    .catch(e => {
+      window.jsErrors.push({message: 'Login fetch failed: ' + e.message});
+    });
+
+    setTimeout(() => {
+      const pre = document.createElement('pre');
+      pre.id = 'diagnostics';
+      pre.textContent = JSON.stringify({
+        errors: window.jsErrors,
+        logs: window.jsLogs,
+        href: window.location.href,
+        localStorage: typeof localStorage !== 'undefined' ? 'present' : 'missing',
+        innerHTML: document.querySelector('app-root')?.innerHTML.substring(0, 3000)
+      }, null, 2);
+      document.body.appendChild(pre);
+    }, 12000);
+  </script>
+  <script type="module" src="/main.js"></script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

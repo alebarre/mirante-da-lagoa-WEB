@@ -4,8 +4,9 @@
 
   <div class="error" *ngIf="error">{{ error }}</div>
   <div *ngIf="loading">Carregando...</div>
+  <div *ngIf="!loading && !error && items.length === 0">Nenhum funcionário cadastrado.</div>
 
-  <table class="data-table" *ngIf="!loading">
+  <table class="data-table" *ngIf="!loading && items.length > 0">
     <thead>
       <tr>
         <th>Nome</th>
