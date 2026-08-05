@@ -1,0 +1,11 @@
+1 - Necessário revisar todas as requisições ao backend e tratar o erro caso ele exista seguindo o código e a mensagem de erro que o backend retornar.
+2 - Criar no frontend uma área de exposição dos erros das requisições (menasgem tratada, amigável ao usuário).
+3 - Criar logs no console nas etapas às chamadas ao backend.
+4 - Melhorias no frontend:
+	4.1 - Templates não estão proporcionais, estão colados na barda esquerda da tela e não possuem boras ou limitadores de contexto.
+	4.2 - Templates devem ser responsivos e considerar mobile e tablets.
+	4.3 - Retirar todos os ícones da aplicação e utilizar fontawesome.
+	4.4 - Aplicação deve ter majoritariamente tons de verde, verde escuro, azul, azul escuro e branco e cinza.
+	4.5 - Comunicação com o usuário deve serguir o padrão:
+		4.5.1 - Quando houver diálogo, deve conter modal, como serviço compartilhado à toda a aplicação, recebendo parâmetros e servindo à vários estados de diálogo.
+		4.5.2 - Quando não houver diálogo (apenas aviso) deve acontecer por meio de toast, serviço compartilhado à toda a aplicação e mudando de estado de acordo com a carcaterística do diálogo.
