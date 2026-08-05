@@ -17,7 +17,7 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router,
+    public router: Router,
     private toastService: ToastService,
     private errorHandler: ErrorHandlerService
   ) {

@@ -4,10 +4,6 @@ import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'login', loadChildren: () => import('./auth/auth-module').then(m => m.AuthModule) },
-  { path: 'register', loadChildren: () => import('./auth/auth-module').then(m => m.AuthModule) },
-  { path: 'forgot', loadChildren: () => import('./auth/auth-module').then(m => m.AuthModule) },
-  { path: 'reset', loadChildren: () => import('./auth/auth-module').then(m => m.AuthModule) },
   { path: 'dashboard', canActivate: [AuthGuard], loadChildren: () => import('./dashboard/dashboard-module').then(m => m.DashboardModule) },
   { path: 'funcionarios', canActivate: [AuthGuard], loadChildren: () => import('./funcionarios/funcionarios-module').then(m => m.FuncionariosModule) },
   { path: 'compromissos', canActivate: [AuthGuard], loadChildren: () => import('./compromissos/compromissos-module').then(m => m.CompromissosModule) },
