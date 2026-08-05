@@ -1,7 +1,7 @@
 <div class="page">
   <h2>
     <i class="fas {{ id ? 'fa-edit' : 'fa-plus' }}"></i>
-    {{ id ? 'Editar' : 'Nova' }} Obrigação Trabalhista
+    {{ id ? 'Editar' : 'Nova' }} Obrigacao Trabalhista
   </h2>
 
   <form [formGroup]="form" (ngSubmit)="save()">
@@ -11,7 +11,7 @@
     </div>
 
     <div class="form-group">
-      <label><i class="fas fa-align-left"></i> Descrição</label>
+      <label><i class="fas fa-align-left"></i> Descricao</label>
       <textarea formControlName="description" rows="2"></textarea>
     </div>
 
@@ -33,11 +33,11 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label><i class="fas fa-check-circle"></i> Concluído em</label>
+        <label><i class="fas fa-check-circle"></i> Concluido em</label>
         <input type="date" formControlName="completedAt" />
       </div>
       <div class="form-group">
-        <label><i class="fas fa-user"></i> Responsável</label>
+        <label><i class="fas fa-user"></i> Responsavel</label>
         <input formControlName="responsible" />
       </div>
     </div>
@@ -55,11 +55,11 @@
     </div>
 
     <div class="form-group">
-      <label><i class="fas fa-sticky-note"></i> Observações</label>
+      <label><i class="fas fa-sticky-note"></i> Observacoes</label>
       <textarea formControlName="notes" rows="2"></textarea>
     </div>
 
-    <div class="actions">
+    <div class="actions" role="group" aria-label="Acoes do formulario">
       <button type="submit" class="btn-primary" [disabled]="loading">
         <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-save'"></i>
         {{ loading ? 'Salvando...' : 'Salvar' }}

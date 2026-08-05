@@ -6,22 +6,22 @@
 
   <form [formGroup]="form" (ngSubmit)="save()">
     <div class="form-group">
-      <label><i class="fas fa-heading"></i> Título *</label>
+      <label><i class="fas fa-heading"></i> Titulo *</label>
       <input formControlName="title" />
     </div>
 
     <div class="form-group">
-      <label><i class="fas fa-align-left"></i> Descrição</label>
+      <label><i class="fas fa-align-left"></i> Descricao</label>
       <textarea formControlName="description" rows="2"></textarea>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label><i class="fas fa-hourglass-start"></i> Início</label>
+        <label><i class="fas fa-hourglass-start"></i> Inicio</label>
         <input type="datetime-local" formControlName="startAt" />
       </div>
       <div class="form-group">
-        <label><i class="fas fa-hourglass-end"></i> Término</label>
+        <label><i class="fas fa-hourglass-end"></i> Termino</label>
         <input type="datetime-local" formControlName="endAt" />
       </div>
     </div>
@@ -31,9 +31,9 @@
         <label><i class="fas fa-map-marker-alt"></i> Local</label>
         <select formControlName="location">
           <option value="">Selecione</option>
-          <option value="Salão de festas">Salão de festas</option>
+          <option value="Salão de festas">Salao de festas</option>
           <option value="Piscina">Piscina</option>
-          <option value="Área comum">Área comum</option>
+          <option value="Área comum">Area comum</option>
           <option value="Churrasqueira">Churrasqueira</option>
         </select>
       </div>
@@ -54,7 +54,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label><i class="fas fa-users"></i> Máx. participantes</label>
+        <label><i class="fas fa-users"></i> Max. participantes</label>
         <input type="number" formControlName="maxParticipants" />
       </div>
     </div>
@@ -67,7 +67,7 @@
     </div>
 
     <div class="form-group">
-      <label><i class="fas fa-sticky-note"></i> Observações</label>
+      <label><i class="fas fa-sticky-note"></i> Observacoes</label>
       <textarea formControlName="notes" rows="2"></textarea>
     </div>
 

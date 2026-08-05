@@ -1,7 +1,7 @@
 <div class="page">
   <h2>
     <i class="fas {{ id ? 'fa-edit' : 'fa-plus' }}"></i>
-    {{ id ? 'Editar' : 'Novo' }} Funcionário
+    {{ id ? 'Editar' : 'Novo' }} Funcionario
   </h2>
 
   <form [formGroup]="form" (ngSubmit)="save()">
@@ -39,7 +39,7 @@
     </div>
 
     <div class="form-group">
-      <label><i class="fas fa-map-marker-alt"></i> Endereço</label>
+      <label><i class="fas fa-map-marker-alt"></i> Endereco</label>
       <input formControlName="address" />
     </div>
 
@@ -56,18 +56,18 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label><i class="fas fa-calendar-check"></i> Data de admissão</label>
+        <label><i class="fas fa-calendar-check"></i> Data de admissao</label>
         <input type="date" formControlName="hireDate" />
       </div>
       <div class="form-group">
-        <label><i class="fas fa-calendar-times"></i> Data de demissão</label>
+        <label><i class="fas fa-calendar-times"></i> Data de demissao</label>
         <input type="date" formControlName="terminationDate" />
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label><i class="fas fa-money-bill-wave"></i> Salário</label>
+        <label><i class="fas fa-money-bill-wave"></i> Salario</label>
         <input type="number" formControlName="salary" />
       </div>
       <div class="form-group">
@@ -76,18 +76,18 @@
           <option value="">Selecione</option>
           <option value="CLT">CLT</option>
           <option value="PJ">PJ</option>
-          <option value="ESTAGIARIO">Estagiário</option>
+          <option value="ESTAGIARIO">Estagiario</option>
         </select>
       </div>
     </div>
 
     <div class="form-group">
-      <label><i class="fas fa-university"></i> Dados bancários</label>
+      <label><i class="fas fa-university"></i> Dados bancarios</label>
       <input formControlName="bankAccount" />
     </div>
 
     <div class="form-group">
-      <label><i class="fas fa-sticky-note"></i> Observações</label>
+      <label><i class="fas fa-sticky-note"></i> Observacoes</label>
       <textarea formControlName="notes" rows="3"></textarea>
     </div>
 
