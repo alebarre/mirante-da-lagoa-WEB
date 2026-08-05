@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
@@ -12,7 +13,7 @@ import {
   Role
 } from '../models/auth.model';
 
-const API_URL = 'http://localhost:8080/api/auth';
+const API_URL = `${environment.apiUrl}/auth`;
 const STORAGE_KEY = 'mirante_lagoa_auth';
 
 @Injectable({ providedIn: 'root' })
@@ -82,3 +83,5 @@ export class AuthService {
     return !!role && roles.includes(role);
   }
 }
+
+
