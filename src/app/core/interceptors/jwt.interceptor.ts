@@ -15,11 +15,13 @@ export class JwtInterceptor implements HttpInterceptor {
     const token = this.authService.getAccessToken();
     if (token) {
       req = this.addToken(req, token);
+      console.log('[JwtInterceptor] Token adicionado à requisição', req.url);
     }
 
     return next.handle(req).pipe(
       catchError(err => {
         if (err instanceof HttpErrorResponse && err.status === 401) {
+          console.log('[JwtInterceptor] 401 detectado, tentando refresh', req.url);
           return this.handle401(req, next);
         }
         return throwError(() => err);
@@ -35,14 +37,17 @@ export class JwtInterceptor implements HttpInterceptor {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshSubject.next(null);
+      console.log('[JwtInterceptor] Iniciando refresh de token');
       return this.authService.refreshToken().pipe(
         switchMap(auth => {
           this.isRefreshing = false;
           this.refreshSubject.next(auth.accessToken);
+          console.log('[JwtInterceptor] Token renovado com sucesso');
           return next.handle(this.addToken(req, auth.accessToken));
         }),
         catchError(err => {
           this.isRefreshing = false;
+          console.error('[JwtInterceptor] Falha ao renovar token', err);
           this.authService.logout();
           return throwError(() => err);
         })
@@ -52,7 +57,10 @@ export class JwtInterceptor implements HttpInterceptor {
     return this.refreshSubject.pipe(
       filter(token => token !== null),
       take(1),
-      switchMap(token => next.handle(this.addToken(req, token!)))
+      switchMap(token => {
+        console.log('[JwtInterceptor] Reexecutando requisição após refresh', req.url);
+        return next.handle(this.addToken(req, token!));
+      })
     );
   }
 }

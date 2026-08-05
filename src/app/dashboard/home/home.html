@@ -1,32 +1,38 @@
+<button class="menu-toggle" (click)="toggleSidebar()" aria-label="Menu">
+  <i class="fas fa-bars"></i>
+</button>
+
 <div class="dashboard">
-  <aside class="sidebar">
+  <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="brand">
-      <h3>Mirante da Lagoa</h3>
+      <h3><i class="fas fa-water"></i> Mirante da Lagoa</h3>
       <small>Saquarema/RJ</small>
     </div>
 
     <nav class="menu">
-      <a *ngFor="let item of menu" [routerLink]="item.path" routerLinkActive="active">
-        <span class="icon">{{ item.icon }}</span> {{ item.label }}
+      <a *ngFor="let item of menu" [routerLink]="item.path" routerLinkActive="active" (click)="closeSidebar()">
+        <i class="fas {{ item.icon }}"></i> {{ item.label }}
       </a>
     </nav>
 
     <div class="user-info">
       <strong>{{ auth?.fullName }}</strong>
       <small>{{ auth?.role }}</small>
-      <button (click)="logout()" class="btn-logout">Sair</button>
+      <button (click)="logout()" class="btn-logout">
+        <i class="fas fa-sign-out-alt"></i> Sair
+      </button>
     </div>
   </aside>
 
   <main class="content">
-    <h1>Bem-vindo, {{ auth?.fullName || 'Usuário' }}!</h1>
-    <p>Escolha uma opção no menu lateral para gerenciar o condomínio.</p>
+    <h1><i class="fas fa-water"></i> Bem-vindo, {{ auth?.fullName || 'Usuário' }}!</h1>
+    <p>Escolha uma opção abaixo para gerenciar o condomínio.</p>
 
-    <div class="cards">
-      <div class="card" *ngFor="let item of menu" [routerLink]="item.path">
-        <span class="card-icon">{{ item.icon }}</span>
+    <div class="dashboard-cards">
+      <a *ngFor="let item of menu" class="dashboard-card" [routerLink]="item.path">
+        <i class="fas {{ item.icon }}"></i>
         <h4>{{ item.label }}</h4>
-      </div>
+      </a>
     </div>
   </main>
 </div>

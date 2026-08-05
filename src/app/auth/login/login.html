@@ -1,29 +1,28 @@
 <div class="auth-container">
   <div class="auth-card">
-    <h2>Mirante da Lagoa</h2>
+    <h2><i class="fas fa-water"></i> Mirante da Lagoa</h2>
     <p class="subtitle">Saquarema/RJ - Acesso ao sistema</p>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label>E-mail</label>
+        <label><i class="fas fa-envelope"></i> E-mail</label>
         <input type="email" formControlName="email" placeholder="seu@email.com" />
       </div>
 
       <div class="form-group">
-        <label>Senha</label>
+        <label><i class="fas fa-lock"></i> Senha</label>
         <input type="password" formControlName="password" placeholder="Senha" />
       </div>
 
-      <div class="error" *ngIf="error">{{ error }}</div>
-
       <button type="submit" [disabled]="loading" class="btn-primary">
+        <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-sign-in-alt'"></i>
         {{ loading ? 'Entrando...' : 'Entrar' }}
       </button>
     </form>
 
     <div class="auth-links">
-      <a routerLink="/register">Criar conta</a> |
-      <a routerLink="/forgot">Esqueci a senha</a>
+      <a routerLink="/register"><i class="fas fa-user-plus"></i> Criar conta</a> |
+      <a routerLink="/forgot"><i class="fas fa-key"></i> Esqueci a senha</a>
     </div>
   </div>
 </div>

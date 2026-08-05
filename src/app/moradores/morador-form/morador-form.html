@@ -1,78 +1,101 @@
 <div class="page">
-  <h2>{{ id ? 'Editar' : 'Novo' }} Morador</h2>
+  <h2>
+    <i class="fas {{ id ? 'fa-edit' : 'fa-plus' }}"></i>
+    {{ id ? 'Editar' : 'Novo' }} Morador
+  </h2>
+
   <form [formGroup]="form" (ngSubmit)="save()">
     <div class="form-group">
-      <label>Nome completo</label>
+      <label><i class="fas fa-user"></i> Nome completo *</label>
       <input formControlName="fullName" />
     </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label>CPF</label>
+        <label><i class="fas fa-id-card"></i> CPF</label>
         <input formControlName="cpf" />
       </div>
       <div class="form-group">
-        <label>RG</label>
+        <label><i class="fas fa-passport"></i> RG</label>
         <input formControlName="rg" />
       </div>
       <div class="form-group">
-        <label>Nascimento</label>
+        <label><i class="fas fa-birthday-cake"></i> Nascimento</label>
         <input type="date" formControlName="birthDate" />
       </div>
     </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label>Telefone</label>
+        <label><i class="fas fa-phone"></i> Telefone</label>
         <input formControlName="phone" />
       </div>
       <div class="form-group">
-        <label>E-mail</label>
+        <label><i class="fas fa-envelope"></i> E-mail</label>
         <input type="email" formControlName="email" />
       </div>
     </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label>Bloco</label>
+        <label><i class="fas fa-building"></i> Bloco</label>
         <input formControlName="block" />
       </div>
       <div class="form-group">
-        <label>Apartamento</label>
+        <label><i class="fas fa-door-closed"></i> Apartamento</label>
         <input formControlName="apartment" />
       </div>
       <div class="form-group">
-        <label>Vaga</label>
+        <label><i class="fas fa-car"></i> Vaga</label>
         <input formControlName="parkingSpot" />
       </div>
     </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label>Pets</label>
+        <label><i class="fas fa-paw"></i> Pets</label>
         <input formControlName="pets" />
       </div>
       <div class="form-group checkbox">
-        <label><input type="checkbox" formControlName="owner" /> Proprietário</label>
+        <label>
+          <input type="checkbox" formControlName="owner" />
+          <i class="fas fa-user-check"></i> Proprietário
+        </label>
       </div>
     </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label>Entrada</label>
+        <label><i class="fas fa-calendar-check"></i> Entrada</label>
         <input type="date" formControlName="moveInDate" />
       </div>
       <div class="form-group">
-        <label>Saída</label>
+        <label><i class="fas fa-calendar-times"></i> Saída</label>
         <input type="date" formControlName="moveOutDate" />
       </div>
     </div>
+
     <div class="form-group">
-      <label>Contato de emergência</label>
+      <label><i class="fas fa-phone-alt"></i> Contato de emergência</label>
       <input formControlName="emergencyContact" />
     </div>
+
     <div class="form-group">
-      <label>Observações</label>
+      <label><i class="fas fa-sticky-note"></i> Observações</label>
       <textarea formControlName="notes" rows="2"></textarea>
     </div>
+
     <div class="actions">
-      <button type="submit" class="btn-primary">Salvar</button>
-      <button type="button" (click)="router.navigate(['/moradores'])">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+        {{ loading ? 'Salvando...' : 'Salvar' }}
+      </button>
+      <button type="button" (click)="router.navigate(['/moradores'])">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+      <button type="button" class="btn-back" (click)="router.navigate(['/moradores'])">
+        <i class="fas fa-arrow-left"></i> Voltar
+      </button>
     </div>
   </form>
 </div>

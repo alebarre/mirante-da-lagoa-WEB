@@ -1,31 +1,38 @@
 <div class="page">
-  <h2>{{ id ? 'Editar' : 'Novo' }} Compromisso</h2>
+  <h2>
+    <i class="fas {{ id ? 'fa-edit' : 'fa-plus' }}"></i>
+    {{ id ? 'Editar' : 'Novo' }} Compromisso
+  </h2>
+
   <form [formGroup]="form" (ngSubmit)="save()">
     <div class="form-group">
-      <label>Título</label>
+      <label><i class="fas fa-heading"></i> Título *</label>
       <input formControlName="title" />
     </div>
+
     <div class="form-group">
-      <label>Descrição</label>
+      <label><i class="fas fa-align-left"></i> Descrição</label>
       <textarea formControlName="description" rows="2"></textarea>
     </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label>Data/Hora</label>
+        <label><i class="fas fa-calendar-alt"></i> Data/Hora</label>
         <input type="datetime-local" formControlName="scheduledAt" />
       </div>
       <div class="form-group">
-        <label>Local</label>
+        <label><i class="fas fa-map-marker-alt"></i> Local</label>
         <input formControlName="location" />
       </div>
     </div>
+
     <div class="form-row">
       <div class="form-group">
-        <label>Responsável</label>
+        <label><i class="fas fa-user"></i> Responsável</label>
         <input formControlName="responsible" />
       </div>
       <div class="form-group">
-        <label>Status</label>
+        <label><i class="fas fa-tag"></i> Status</label>
         <select formControlName="status">
           <option value="AGENDADO">Agendado</option>
           <option value="REALIZADO">Realizado</option>
@@ -33,9 +40,18 @@
         </select>
       </div>
     </div>
+
     <div class="actions">
-      <button type="submit" class="btn-primary">Salvar</button>
-      <button type="button" (click)="router.navigate(['/compromissos'])">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+        {{ loading ? 'Salvando...' : 'Salvar' }}
+      </button>
+      <button type="button" (click)="router.navigate(['/compromissos'])">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+      <button type="button" class="btn-back" (click)="router.navigate(['/compromissos'])">
+        <i class="fas fa-arrow-left"></i> Voltar
+      </button>
     </div>
   </form>
 </div>

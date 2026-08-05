@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
+import { ErrorHandlerService } from '../../core/services/error-handler.service';
 
 @Component({
   selector: 'app-login',
@@ -10,10 +12,15 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class Login {
   form: FormGroup;
-  error = '';
   loading = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private toastService: ToastService,
+    private errorHandler: ErrorHandlerService
+  ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -21,13 +28,19 @@ export class Login {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.toastService.warning('Preencha e-mail e senha corretamente.');
+      return;
+    }
     this.loading = true;
-    this.error = '';
     this.authService.login(this.form.value).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
+      next: () => {
+        this.toastService.success('Login realizado com sucesso!');
+        this.router.navigate(['/dashboard']);
+      },
       error: err => {
-        this.error = err.error?.message || 'E-mail ou senha inválidos';
+        const message = this.errorHandler.extractMessage(err, 'E-mail ou senha inválidos');
+        this.toastService.error(message);
         this.loading = false;
       }
     });

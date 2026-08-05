@@ -1,8 +1,8 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import {
   AuthResponse,
   ForgotPasswordRequest,
@@ -23,22 +23,37 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
+  private log(action: string, data?: unknown): void {
+    console.log(`[AuthService] ${action}`, data ?? '');
+  }
+
+  private post<T>(path: string, body: any): Observable<T> {
+    this.log(`${path} request`, body);
+    return this.http.post<T>(`${API_URL}${path}`, body).pipe(
+      tap(res => this.log(`${path} response`, res)),
+      catchError(err => {
+        console.error(`[AuthService] ${path} error`, err);
+        return throwError(() => err);
+      })
+    );
+  }
+
   login(req: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_URL}/login`, req).pipe(
+    return this.post<AuthResponse>('/login', req).pipe(
       tap(res => this.setAuth(res))
     );
   }
 
   register(req: RegisterRequest): Observable<any> {
-    return this.http.post(`${API_URL}/register`, req);
+    return this.post('/register', req);
   }
 
   forgotPassword(req: ForgotPasswordRequest): Observable<any> {
-    return this.http.post(`${API_URL}/forgot`, req);
+    return this.post('/forgot', req);
   }
 
   resetPassword(req: ResetPasswordRequest): Observable<any> {
-    return this.http.post(`${API_URL}/reset`, req);
+    return this.post('/reset', req);
   }
 
   refreshToken(): Observable<AuthResponse> {
@@ -56,11 +71,13 @@ export class AuthService {
   }
 
   logout(): void {
+    this.log('logout');
     localStorage.removeItem(STORAGE_KEY);
     this.authSubject.next(null);
   }
 
   setAuth(auth: AuthResponse): void {
+    this.log('setAuth', auth);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(auth));
     this.authSubject.next(auth);
   }
@@ -83,5 +100,3 @@ export class AuthService {
     return !!role && roles.includes(role);
   }
 }
-
-

@@ -1,0 +1,33 @@
+<div class="modal-overlay" *ngIf="modal$ | async as modal" (click)="modalService.close(false)">
+  <div class="modal-container modal-{{ modal.type || 'info' }}" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <i class="fas modal-icon" [ngClass]="{
+        'fa-info-circle': (modal.type || 'info') === 'info',
+        'fa-check-circle': modal.type === 'success',
+        'fa-exclamation-triangle': modal.type === 'warning',
+        'fa-exclamation-circle': modal.type === 'danger'
+      }"></i>
+      <h3>{{ modal.title }}</h3>
+    </div>
+    <div class="modal-body">
+      <p>{{ modal.message }}</p>
+    </div>
+    <div class="modal-actions">
+      <button
+        *ngIf="modal.showCancel !== false"
+        type="button"
+        class="btn-secondary"
+        (click)="modalService.close(false)"
+      >
+        {{ modal.cancelText || 'Cancelar' }}
+      </button>
+      <button
+        type="button"
+        class="btn-confirm"
+        (click)="modalService.close(true)"
+      >
+        {{ modal.confirmText || 'OK' }}
+      </button>
+    </div>
+  </div>
+</div>

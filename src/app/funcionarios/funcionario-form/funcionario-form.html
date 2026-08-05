@@ -1,74 +1,77 @@
 <div class="page">
-  <h2>{{ id ? 'Editar' : 'Novo' }} Funcionário</h2>
+  <h2>
+    <i class="fas {{ id ? 'fa-edit' : 'fa-plus' }}"></i>
+    {{ id ? 'Editar' : 'Novo' }} Funcionário
+  </h2>
 
   <form [formGroup]="form" (ngSubmit)="save()">
     <div class="form-row">
       <div class="form-group">
-        <label>Nome completo</label>
+        <label><i class="fas fa-user"></i> Nome completo *</label>
         <input formControlName="fullName" />
       </div>
       <div class="form-group">
-        <label>CPF</label>
+        <label><i class="fas fa-id-card"></i> CPF</label>
         <input formControlName="cpf" />
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>RG</label>
+        <label><i class="fas fa-passport"></i> RG</label>
         <input formControlName="rg" />
       </div>
       <div class="form-group">
-        <label>Data de nascimento</label>
+        <label><i class="fas fa-birthday-cake"></i> Data de nascimento</label>
         <input type="date" formControlName="birthDate" />
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Telefone</label>
+        <label><i class="fas fa-phone"></i> Telefone</label>
         <input formControlName="phone" />
       </div>
       <div class="form-group">
-        <label>E-mail</label>
+        <label><i class="fas fa-envelope"></i> E-mail</label>
         <input type="email" formControlName="email" />
       </div>
     </div>
 
     <div class="form-group">
-      <label>Endereço</label>
+      <label><i class="fas fa-map-marker-alt"></i> Endereço</label>
       <input formControlName="address" />
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Cargo</label>
+        <label><i class="fas fa-briefcase"></i> Cargo</label>
         <input formControlName="position" />
       </div>
       <div class="form-group">
-        <label>Departamento</label>
+        <label><i class="fas fa-building"></i> Departamento</label>
         <input formControlName="department" />
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Data de admissão</label>
+        <label><i class="fas fa-calendar-check"></i> Data de admissão</label>
         <input type="date" formControlName="hireDate" />
       </div>
       <div class="form-group">
-        <label>Data de demissão</label>
+        <label><i class="fas fa-calendar-times"></i> Data de demissão</label>
         <input type="date" formControlName="terminationDate" />
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Salário</label>
+        <label><i class="fas fa-money-bill-wave"></i> Salário</label>
         <input type="number" formControlName="salary" />
       </div>
       <div class="form-group">
-        <label>Regime</label>
+        <label><i class="fas fa-clock"></i> Regime</label>
         <select formControlName="workRegime">
           <option value="">Selecione</option>
           <option value="CLT">CLT</option>
@@ -79,18 +82,26 @@
     </div>
 
     <div class="form-group">
-      <label>Dados bancários</label>
+      <label><i class="fas fa-university"></i> Dados bancários</label>
       <input formControlName="bankAccount" />
     </div>
 
     <div class="form-group">
-      <label>Observações</label>
+      <label><i class="fas fa-sticky-note"></i> Observações</label>
       <textarea formControlName="notes" rows="3"></textarea>
     </div>
 
     <div class="actions">
-      <button type="submit" class="btn-primary">Salvar</button>
-      <button type="button" (click)="router.navigate(['/funcionarios'])">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        <i class="fas" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+        {{ loading ? 'Salvando...' : 'Salvar' }}
+      </button>
+      <button type="button" (click)="router.navigate(['/funcionarios'])">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+      <button type="button" class="btn-back" (click)="router.navigate(['/funcionarios'])">
+        <i class="fas fa-arrow-left"></i> Voltar
+      </button>
     </div>
   </form>
 </div>

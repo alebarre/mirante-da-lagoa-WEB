@@ -1,23 +1,57 @@
 <div class="page">
-  <h2>📋 Obrigações Trabalhistas</h2>
-  <button class="btn-primary" (click)="newItem()">Nova Obrigação</button>
-  <div class="error" *ngIf="error">{{ error }}</div>
-  <table class="data-table" *ngIf="!loading">
-    <thead>
-      <tr><th>Nome</th><th>Periodicidade</th><th>Vencimento</th><th>Responsável</th><th>Status</th><th>Ações</th></tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of items">
-        <td>{{ item.name }}</td>
-        <td>{{ item.periodicity }}</td>
-        <td>{{ item.dueDate | date:'dd/MM/yyyy' }}</td>
-        <td>{{ item.responsible || '-' }}</td>
-        <td>{{ item.status || '-' }}</td>
-        <td class="actions">
-          <button (click)="edit(item.id)">Editar</button>
-          <button class="btn-danger" (click)="remove(item.id)">Excluir</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="page-header">
+    <h2><i class="fas fa-clipboard-check"></i> Obrigações Trabalhistas</h2>
+    <button class="btn-primary" (click)="newItem()">
+      <i class="fas fa-plus"></i> Nova Obrigação
+    </button>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <i class="fas fa-spinner fa-spin"></i> Carregando...
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && items.length === 0">
+    <i class="fas fa-clipboard-list"></i>
+    <p>Nenhuma obrigação cadastrada.</p>
+  </div>
+
+  <div class="table-wrapper" *ngIf="!loading && items.length > 0">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Periodicidade</th>
+          <th>Vencimento</th>
+          <th>Responsável</th>
+          <th>Status</th>
+          <th class="col-actions">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items">
+          <td>{{ item.name }}</td>
+          <td>{{ item.periodicity }}</td>
+          <td>{{ item.dueDate | date:'dd/MM/yyyy' }}</td>
+          <td>{{ item.responsible || '-' }}</td>
+          <td>{{ item.status || '-' }}</td>
+          <td class="table-actions">
+            <button (click)="edit(item.id)" title="Editar" class="btn-action">
+              <i class="fas fa-edit"></i>
+              <span class="btn-text">Editar</span>
+            </button>
+            <button class="btn-danger btn-action" (click)="remove(item.id)" title="Excluir">
+              <i class="fas fa-trash-alt"></i>
+              <span class="btn-text">Excluir</span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-footer">
+    <button type="button" class="btn-back" (click)="router.navigate(['/dashboard'])">
+      <i class="fas fa-arrow-left"></i> Voltar
+    </button>
+  </div>
 </div>
