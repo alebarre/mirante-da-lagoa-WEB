@@ -5,7 +5,8 @@
 <div class="dashboard">
   <aside class="sidebar" [class.open]="sidebarOpen">
     <div class="brand">
-      <h3><i class="fas fa-water"></i> Mirante da Lagoa</h3>
+      <img src="/images/coqueiro-branco.png" alt="Mirante da Lagoa" class="brand-logo" />
+      <h3>Mirante da Lagoa</h3>
       <small>Saquarema/RJ</small>
     </div>
 
@@ -25,13 +26,13 @@
   </aside>
 
   <main class="content">
-    <h1><i class="fas fa-water"></i> Bem-vindo, {{ auth?.fullName || 'Usuário' }}!</h1>
-    <p>Escolha uma opção abaixo para gerenciar o condomínio.</p>
+    <h1><img src="/images/coqueiro-transparente.png" alt="Mirante da Lagoa" class="welcome-logo" /> Bem-vindo, {{ auth?.fullName || 'Usuário' }}!</h1>
+    <p>Escolha uma opção no menu ao lado para começar.</p>
 
     <div class="dashboard-cards">
-      <a *ngFor="let item of menu" class="dashboard-card" [routerLink]="item.path">
-        <i class="fas {{ item.icon }}"></i>
-        <h4>{{ item.label }}</h4>
+      <a *ngFor="let card of dashboardCards" [routerLink]="card.path" class="dashboard-card">
+        <i class="fas {{ card.icon }}"></i>
+        <h4>{{ card.label }}</h4>
       </a>
     </div>
   </main>

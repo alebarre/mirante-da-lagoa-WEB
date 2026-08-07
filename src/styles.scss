@@ -84,6 +84,24 @@ img, video, table, iframe { max-width: 100%; }
   font-size: 26px;
 }
 
+.auth-brand {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-brand .auth-logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.auth-brand h2 {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 26px;
+}
+
 .auth-card .subtitle {
   margin: 0 0 24px;
   color: var(--color-gray-500);
@@ -258,6 +276,18 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
   z-index: 100;
 }
 
+
+.brand {
+  text-align: center;
+}
+
+.brand-logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+}
+
 .brand h3 {
   margin: 0;
   font-size: 20px;
@@ -267,6 +297,14 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
 .brand small {
   color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
+}
+
+.welcome-logo {
+  width: 48px;
+  height: auto;
+  vertical-align: middle;
+  margin-right: 12px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .menu {
@@ -646,7 +684,10 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
   .col-mobile-only { display: table-cell; }
 }
 
+
 @media (max-width: 480px) {
+  .auth-brand .auth-logo { width: 90px; }
+  .auth-brand h2 { font-size: 22px; }
   .auth-card { padding: 24px; }
   .auth-card h2 { font-size: 22px; }
 

@@ -28,6 +28,7 @@ export class Home implements OnInit {
   ];
 
   menu: MenuItem[] = [];
+  dashboardCards: MenuItem[] = [];
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -41,14 +42,17 @@ export class Home implements OnInit {
   private buildMenu(): void {
     if (!this.auth) {
       this.menu = [];
+      this.dashboardCards = [];
       return;
     }
     const role = this.auth.role;
     if (role === 'MORADOR') {
       this.menu = this.allMenu.filter(item => item.label === 'Eventos');
+      this.dashboardCards = this.menu;
       return;
     }
     this.menu = this.allMenu.filter(item => !item.roles || item.roles.includes(role));
+    this.dashboardCards = this.menu;
   }
 
   toggleSidebar(): void {
