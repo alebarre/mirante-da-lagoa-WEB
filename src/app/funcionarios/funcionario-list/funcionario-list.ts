@@ -6,16 +6,22 @@ import { ModalService } from '../../core/services/modal.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Funcionario } from '../../core/models/funcionario.model';
+import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
 
 @Component({
   selector: 'app-funcionario-list',
   templateUrl: './funcionario-list.html',
+  styleUrls: ['./funcionario-list.scss'],
   standalone: false
 })
 export class FuncionarioList implements OnInit {
   items: Funcionario[] = [];
+  filteredItems: Funcionario[] = [];
   loading = false;
   isMorador = false;
+  selectedId?: string;
+  searchText = '';
+  filterPosition = '';
 
   constructor(
     private api: ApiService,
@@ -40,6 +46,7 @@ export class FuncionarioList implements OnInit {
     this.api.get<Funcionario[]>('/funcionarios').subscribe({
       next: data => {
         this.items = data;
+        this.applyFilter();
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -50,6 +57,31 @@ export class FuncionarioList implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  applyFilter(): void {
+    let result = filterByText(this.items, this.searchText, ['fullName', 'email', 'phone', 'cpf', 'department']);
+    result = filterByExactField(result, this.filterPosition, 'position');
+    this.filteredItems = result;
+  }
+
+  clearFilters(): void {
+    this.searchText = '';
+    this.filterPosition = '';
+    this.applyFilter();
+  }
+
+  get positions(): string[] {
+    const all = this.items.map(i => i.position).filter((p): p is string => !!p);
+    return [...new Set(all)].sort();
+  }
+
+  selectItem(item: Funcionario): void {
+    this.selectedId = item.id;
+  }
+
+  trackById(index: number, item: Funcionario): string | undefined {
+    return item.id;
   }
 
   newItem(): void {

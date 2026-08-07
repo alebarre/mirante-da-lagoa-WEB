@@ -6,16 +6,22 @@ import { ModalService } from '../../core/services/modal.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ObrigacaoTrabalhista } from '../../core/models/obrigacao.model';
+import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
 
 @Component({
   selector: 'app-obrigacao-list',
   templateUrl: './obrigacao-list.html',
+  styleUrls: ['./obrigacao-list.scss'],
   standalone: false
 })
 export class ObrigacaoList implements OnInit {
   items: ObrigacaoTrabalhista[] = [];
+  filteredItems: ObrigacaoTrabalhista[] = [];
   loading = false;
   canManage = false;
+  selectedId?: string;
+  searchText = '';
+  filterStatus = '';
 
   constructor(
     private api: ApiService,
@@ -40,6 +46,7 @@ export class ObrigacaoList implements OnInit {
     this.api.get<ObrigacaoTrabalhista[]>('/obrigacoes').subscribe({
       next: d => {
         this.items = d;
+        this.applyFilter();
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -50,6 +57,31 @@ export class ObrigacaoList implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  applyFilter(): void {
+    let result = filterByText(this.items, this.searchText, ['name', 'description', 'periodicity', 'responsible']);
+    result = filterByExactField(result, this.filterStatus, 'status');
+    this.filteredItems = result;
+  }
+
+  clearFilters(): void {
+    this.searchText = '';
+    this.filterStatus = '';
+    this.applyFilter();
+  }
+
+  get statuses(): string[] {
+    const all = this.items.map(i => i.status).filter((s): s is string => !!s);
+    return [...new Set(all)].sort();
+  }
+
+  selectItem(item: ObrigacaoTrabalhista): void {
+    this.selectedId = item.id;
+  }
+
+  trackById(index: number, item: ObrigacaoTrabalhista): string | undefined {
+    return item.id;
   }
 
   newItem(): void {

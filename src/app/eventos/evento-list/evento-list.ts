@@ -6,16 +6,22 @@ import { ModalService } from '../../core/services/modal.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Evento } from '../../core/models/evento.model';
+import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
 
 @Component({
   selector: 'app-evento-list',
   templateUrl: './evento-list.html',
+  styleUrls: ['./evento-list.scss'],
   standalone: false
 })
 export class EventoList implements OnInit {
   items: Evento[] = [];
+  filteredItems: Evento[] = [];
   loading = false;
   isMorador = false;
+  selectedId?: string;
+  searchText = '';
+  filterLocation = '';
 
   constructor(
     private api: ApiService,
@@ -40,6 +46,7 @@ export class EventoList implements OnInit {
     this.api.get<Evento[]>('/eventos').subscribe({
       next: d => {
         this.items = d;
+        this.applyFilter();
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -50,6 +57,26 @@ export class EventoList implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  applyFilter(): void {
+    let result = filterByText(this.items, this.searchText, ['title', 'description', 'organizer', 'location']);
+    result = filterByExactField(result, this.filterLocation, 'location');
+    this.filteredItems = result;
+  }
+
+  clearFilters(): void {
+    this.searchText = '';
+    this.filterLocation = '';
+    this.applyFilter();
+  }
+
+  selectItem(item: Evento): void {
+    this.selectedId = item.id;
+  }
+
+  trackById(index: number, item: Evento): string | undefined {
+    return item.id;
   }
 
   newItem(): void {

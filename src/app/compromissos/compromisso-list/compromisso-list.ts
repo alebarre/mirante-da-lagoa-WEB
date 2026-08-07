@@ -6,16 +6,22 @@ import { ModalService } from '../../core/services/modal.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Compromisso } from '../../core/models/compromisso.model';
+import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
 
 @Component({
   selector: 'app-compromisso-list',
   templateUrl: './compromisso-list.html',
+  styleUrls: ['./compromisso-list.scss'],
   standalone: false
 })
 export class CompromissoList implements OnInit {
   items: Compromisso[] = [];
+  filteredItems: Compromisso[] = [];
   loading = false;
   isMorador = false;
+  selectedId?: string;
+  searchText = '';
+  filterStatus = '';
 
   constructor(
     private api: ApiService,
@@ -40,6 +46,7 @@ export class CompromissoList implements OnInit {
     this.api.get<Compromisso[]>('/compromissos').subscribe({
       next: data => {
         this.items = data;
+        this.applyFilter();
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -50,6 +57,31 @@ export class CompromissoList implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  applyFilter(): void {
+    let result = filterByText(this.items, this.searchText, ['title', 'description', 'location', 'responsible']);
+    result = filterByExactField(result, this.filterStatus, 'status');
+    this.filteredItems = result;
+  }
+
+  clearFilters(): void {
+    this.searchText = '';
+    this.filterStatus = '';
+    this.applyFilter();
+  }
+
+  get statuses(): string[] {
+    const all = this.items.map(i => i.status).filter((s): s is string => !!s);
+    return [...new Set(all)].sort();
+  }
+
+  selectItem(item: Compromisso): void {
+    this.selectedId = item.id;
+  }
+
+  trackById(index: number, item: Compromisso): string | undefined {
+    return item.id;
   }
 
   newItem(): void {

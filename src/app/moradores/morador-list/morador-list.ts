@@ -6,16 +6,22 @@ import { ModalService } from '../../core/services/modal.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Morador } from '../../core/models/morador.model';
+import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
 
 @Component({
   selector: 'app-morador-list',
   templateUrl: './morador-list.html',
+  styleUrls: ['./morador-list.scss'],
   standalone: false
 })
 export class MoradorList implements OnInit {
   items: Morador[] = [];
+  filteredItems: Morador[] = [];
   loading = false;
   isMorador = false;
+  selectedId?: string;
+  searchText = '';
+  filterApartment = '';
 
   constructor(
     private api: ApiService,
@@ -40,6 +46,7 @@ export class MoradorList implements OnInit {
     this.api.get<Morador[]>('/moradores').subscribe({
       next: d => {
         this.items = d;
+        this.applyFilter();
         this.loading = false;
         this.cdr.detectChanges();
       },
@@ -50,6 +57,31 @@ export class MoradorList implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  applyFilter(): void {
+    let result = filterByText(this.items, this.searchText, ['fullName', 'email', 'phone', 'cpf', 'block', 'emergencyContact']);
+    result = filterByExactField(result, this.filterApartment, 'apartment');
+    this.filteredItems = result;
+  }
+
+  clearFilters(): void {
+    this.searchText = '';
+    this.filterApartment = '';
+    this.applyFilter();
+  }
+
+  get apartments(): string[] {
+    const all = this.items.map(i => i.apartment).filter((a): a is string => !!a);
+    return [...new Set(all)].sort();
+  }
+
+  selectItem(item: Morador): void {
+    this.selectedId = item.id;
+  }
+
+  trackById(index: number, item: Morador): string | undefined {
+    return item.id;
   }
 
   newItem(): void {

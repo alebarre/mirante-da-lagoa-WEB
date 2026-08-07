@@ -15,38 +15,76 @@
     <p>Nenhuma obrigação cadastrada.</p>
   </div>
 
-  <div class="table-wrapper" *ngIf="!loading && items.length > 0">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Periodicidade</th>
-          <th>Vencimento</th>
-          <th>Responsável</th>
-          <th>Status</th>
-          <th class="col-actions" *ngIf="canManage">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of items">
-          <td>{{ item.name }}</td>
-          <td>{{ item.periodicity }}</td>
-          <td>{{ item.dueDate | date:'dd/MM/yyyy' }}</td>
-          <td>{{ item.responsible || '-' }}</td>
-          <td>{{ item.status || '-' }}</td>
-          <td class="table-actions" *ngIf="canManage">
-            <button (click)="edit(item.id)" title="Editar" class="btn-action">
-              <i class="fas fa-edit"></i>
-              <span class="btn-text">Editar</span>
-            </button>
-            <button class="btn-danger btn-action" (click)="remove(item.id)" title="Excluir">
-              <i class="fas fa-trash-alt"></i>
-              <span class="btn-text">Excluir</span>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="filters-bar" *ngIf="!loading && items.length > 0">
+    <div class="filter-group search">
+      <i class="fas fa-search"></i>
+      <input type="text" [(ngModel)]="searchText" (input)="applyFilter()" placeholder="Buscar por nome, descrição, periodicidade ou responsável..." />
+    </div>
+
+    <div class="filter-group" *ngIf="statuses.length > 0">
+      <select [(ngModel)]="filterStatus" (change)="applyFilter()">
+        <option value="">Todos os status</option>
+        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+
+    <button class="btn-clear" *ngIf="searchText || filterStatus" (click)="clearFilters()">
+      <i class="fas fa-times"></i> Limpar
+    </button>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && items.length > 0 && filteredItems.length === 0">
+    <i class="fas fa-search"></i>
+    <p>Nenhuma obrigação encontrada para os filtros aplicados.</p>
+  </div>
+
+  <div class="cards-grid" *ngIf="!loading && filteredItems.length > 0">
+    <div class="obrigacao-card" *ngFor="let item of filteredItems; trackBy: trackById" (click)="selectItem(item)" [class.selected]="selectedId === item.id">
+      <div class="card-header">
+        <i class="fas fa-clipboard-check"></i>
+        <h3>{{ item.name }}</h3>
+        <span class="status-badge" *ngIf="item.status">{{ item.status }}</span>
+      </div>
+
+      <div class="card-body">
+        <p class="description" *ngIf="item.description">{{ item.description }}</p>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-sync"></i> Periodicidade</span>
+          <span class="info-value">{{ item.periodicity }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-calendar-day"></i> Vencimento</span>
+          <span class="info-value">{{ item.dueDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-calendar-check"></i> Concluído em</span>
+          <span class="info-value">{{ item.completedAt | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-user-tie"></i> Responsável</span>
+          <span class="info-value">{{ item.responsible || '-' }}</span>
+        </div>
+
+        <p class="notes" *ngIf="item.notes">
+          <i class="fas fa-sticky-note"></i> {{ item.notes }}
+        </p>
+      </div>
+
+      <div class="card-footer" *ngIf="canManage" (click)="$event.stopPropagation()">
+        <button (click)="edit(item.id)" title="Editar" class="btn-action">
+          <i class="fas fa-edit"></i>
+          <span class="btn-text">Editar</span>
+        </button>
+        <button class="btn-danger btn-action" (click)="remove(item.id)" title="Excluir">
+          <i class="fas fa-trash-alt"></i>
+          <span class="btn-text">Excluir</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="page-footer">

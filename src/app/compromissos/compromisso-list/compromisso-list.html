@@ -15,38 +15,67 @@
     <p>Nenhum compromisso cadastrado.</p>
   </div>
 
-  <div class="table-wrapper" *ngIf="!loading && items.length > 0">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Título</th>
-          <th class="col-mobile-only">Data/Hora</th>
-          <th class="col-hide-mobile">Local</th>
-          <th class="col-hide-mobile">Responsável</th>
-          <th class="col-hide-mobile">Status</th>
-          <th class="col-actions" *ngIf="!isMorador">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of items">
-          <td>{{ item.title }}</td>
-          <td class="col-mobile-only">{{ item.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</td>
-          <td class="col-hide-mobile">{{ item.location || '-' }}</td>
-          <td class="col-hide-mobile">{{ item.responsible || '-' }}</td>
-          <td class="col-hide-mobile">{{ item.status || '-' }}</td>
-          <td class="table-actions" *ngIf="!isMorador">
-            <button (click)="edit(item.id)" title="Editar" class="btn-action">
-              <i class="fas fa-edit"></i>
-              <span class="btn-text">Editar</span>
-            </button>
-            <button class="btn-danger btn-action" (click)="remove(item.id)" title="Excluir">
-              <i class="fas fa-trash-alt"></i>
-              <span class="btn-text">Excluir</span>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="filters-bar" *ngIf="!loading && items.length > 0">
+    <div class="filter-group search">
+      <i class="fas fa-search"></i>
+      <input type="text" [(ngModel)]="searchText" (input)="applyFilter()" placeholder="Buscar por título, descrição, local ou responsável..." />
+    </div>
+
+    <div class="filter-group" *ngIf="statuses.length > 0">
+      <select [(ngModel)]="filterStatus" (change)="applyFilter()">
+        <option value="">Todos os status</option>
+        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+
+    <button class="btn-clear" *ngIf="searchText || filterStatus" (click)="clearFilters()">
+      <i class="fas fa-times"></i> Limpar
+    </button>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && items.length > 0 && filteredItems.length === 0">
+    <i class="fas fa-search"></i>
+    <p>Nenhum compromisso encontrado para os filtros aplicados.</p>
+  </div>
+
+  <div class="cards-grid" *ngIf="!loading && filteredItems.length > 0">
+    <div class="compromisso-card" *ngFor="let item of filteredItems; trackBy: trackById" (click)="selectItem(item)" [class.selected]="selectedId === item.id">
+      <div class="card-header">
+        <i class="fas fa-calendar-alt"></i>
+        <h3>{{ item.title }}</h3>
+        <span class="status-badge" *ngIf="item.status">{{ item.status }}</span>
+      </div>
+
+      <div class="card-body">
+        <p class="description" *ngIf="item.description">{{ item.description }}</p>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-clock"></i> Data/Hora</span>
+          <span class="info-value">{{ item.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-map-marker-alt"></i> Local</span>
+          <span class="info-value">{{ item.location || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-user-tie"></i> Responsável</span>
+          <span class="info-value">{{ item.responsible || '-' }}</span>
+        </div>
+      </div>
+
+      <div class="card-footer" *ngIf="!isMorador" (click)="$event.stopPropagation()">
+        <button (click)="edit(item.id)" title="Editar" class="btn-action">
+          <i class="fas fa-edit"></i>
+          <span class="btn-text">Editar</span>
+        </button>
+        <button class="btn-danger btn-action" (click)="remove(item.id)" title="Excluir">
+          <i class="fas fa-trash-alt"></i>
+          <span class="btn-text">Excluir</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="page-footer">

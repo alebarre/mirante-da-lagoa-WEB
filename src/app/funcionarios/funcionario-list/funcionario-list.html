@@ -15,36 +15,118 @@
     <p>Nenhum funcionário cadastrado.</p>
   </div>
 
-  <div class="table-wrapper" *ngIf="!loading && items.length > 0">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Cargo</th>
-          <th>Departamento</th>
-          <th>Telefone</th>
-          <th class="col-actions" *ngIf="!isMorador">Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of items">
-          <td>{{ item.fullName }}</td>
-          <td>{{ item.position || '-' }}</td>
-          <td>{{ item.department || '-' }}</td>
-          <td>{{ item.phone || '-' }}</td>
-          <td class="table-actions" *ngIf="!isMorador">
-            <button (click)="edit(item.id)" title="Editar" class="btn-action">
-              <i class="fas fa-edit"></i>
-              <span class="btn-text">Editar</span>
-            </button>
-            <button class="btn-danger btn-action" (click)="remove(item.id)" title="Excluir">
-              <i class="fas fa-trash-alt"></i>
-              <span class="btn-text">Excluir</span>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="filters-bar" *ngIf="!loading && items.length > 0">
+    <div class="filter-group search">
+      <i class="fas fa-search"></i>
+      <input type="text" [(ngModel)]="searchText" (input)="applyFilter()" placeholder="Buscar por nome, e-mail, telefone, CPF ou departamento..." />
+    </div>
+
+    <div class="filter-group" *ngIf="positions.length > 0">
+      <select [(ngModel)]="filterPosition" (change)="applyFilter()">
+        <option value="">Todos os cargos</option>
+        <option *ngFor="let p of positions" [value]="p">{{ p }}</option>
+      </select>
+    </div>
+
+    <button class="btn-clear" *ngIf="searchText || filterPosition" (click)="clearFilters()">
+      <i class="fas fa-times"></i> Limpar
+    </button>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && items.length > 0 && filteredItems.length === 0">
+    <i class="fas fa-search"></i>
+    <p>Nenhum funcionário encontrado para os filtros aplicados.</p>
+  </div>
+
+  <div class="cards-grid" *ngIf="!loading && filteredItems.length > 0">
+    <div class="funcionario-card" *ngFor="let item of filteredItems; trackBy: trackById" (click)="selectItem(item)" [class.selected]="selectedId === item.id">
+      <div class="card-header">
+        <i class="fas fa-hard-hat"></i>
+        <h3>{{ item.fullName }}</h3>
+      </div>
+
+      <div class="card-body">
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-briefcase"></i> Cargo</span>
+          <span class="info-value">{{ item.position || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-building"></i> Departamento</span>
+          <span class="info-value">{{ item.department || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-phone"></i> Telefone</span>
+          <span class="info-value">{{ item.phone || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-envelope"></i> E-mail</span>
+          <span class="info-value">{{ item.email || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-id-card"></i> CPF</span>
+          <span class="info-value">{{ item.cpf || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-address-card"></i> RG</span>
+          <span class="info-value">{{ item.rg || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-birthday-cake"></i> Nascimento</span>
+          <span class="info-value">{{ item.birthDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-map-marked-alt"></i> Endereço</span>
+          <span class="info-value">{{ item.address || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-calendar-check"></i> Admissão</span>
+          <span class="info-value">{{ item.hireDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-calendar-times"></i> Demissão</span>
+          <span class="info-value">{{ item.terminationDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-money-bill-wave"></i> Salário</span>
+          <span class="info-value">{{ item.salary !== undefined ? (item.salary | currency:'BRL':'symbol':'1.2-2') : '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-clock"></i> Regime</span>
+          <span class="info-value">{{ item.workRegime || '-' }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-university"></i> Conta bancária</span>
+          <span class="info-value">{{ item.bankAccount || '-' }}</span>
+        </div>
+
+        <p class="notes" *ngIf="item.notes">
+          <i class="fas fa-sticky-note"></i> {{ item.notes }}
+        </p>
+      </div>
+
+      <div class="card-footer" *ngIf="!isMorador" (click)="$event.stopPropagation()">
+        <button (click)="edit(item.id)" title="Editar" class="btn-action">
+          <i class="fas fa-edit"></i>
+          <span class="btn-text">Editar</span>
+        </button>
+        <button class="btn-danger btn-action" (click)="remove(item.id)" title="Excluir">
+          <i class="fas fa-trash-alt"></i>
+          <span class="btn-text">Excluir</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="page-footer">
