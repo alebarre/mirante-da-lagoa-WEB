@@ -4,6 +4,7 @@ import { ApiService } from '../../core/services/api.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ModalService } from '../../core/services/modal.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Morador } from '../../core/models/morador.model';
 
 @Component({
@@ -14,6 +15,7 @@ import { Morador } from '../../core/models/morador.model';
 export class MoradorList implements OnInit {
   items: Morador[] = [];
   loading = false;
+  isMorador = false;
 
   constructor(
     private api: ApiService,
@@ -21,10 +23,17 @@ export class MoradorList implements OnInit {
     private cdr: ChangeDetectorRef,
     private toastService: ToastService,
     private modalService: ModalService,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private authService: AuthService
   ) {}
 
-  ngOnInit(): void { this.load(); }
+  ngOnInit(): void {
+    this.authService.auth$.subscribe(a => {
+      this.isMorador = a?.role === 'MORADOR';
+      this.cdr.detectChanges();
+    });
+    this.load();
+  }
 
   load(): void {
     this.loading = true;
@@ -43,10 +52,29 @@ export class MoradorList implements OnInit {
     });
   }
 
-  edit(id?: string): void { if (id) this.router.navigate(['/moradores/edit', id]); }
+  newItem(): void {
+    if (this.isMorador) {
+      this.toastService.warning('Moradores não podem cadastrar moradores.');
+      return;
+    }
+    this.router.navigate(['/moradores/new']);
+  }
+
+  edit(id?: string): void {
+    if (!id) return;
+    if (this.isMorador) {
+      this.toastService.warning('Moradores não podem editar moradores.');
+      return;
+    }
+    this.router.navigate(['/moradores/edit', id]);
+  }
 
   async remove(id?: string): Promise<void> {
     if (!id) return;
+    if (this.isMorador) {
+      this.toastService.warning('Moradores não podem excluir moradores.');
+      return;
+    }
     const confirmed = await this.modalService.open({
       title: 'Excluir morador',
       message: 'Deseja realmente excluir este morador?',
@@ -58,7 +86,7 @@ export class MoradorList implements OnInit {
 
     this.api.delete(`/moradores/${id}`).subscribe({
       next: () => {
-        this.toastService.success('Morador excluÃ­do com sucesso!');
+        this.toastService.success('Morador excluído com sucesso.');
         this.load();
       },
       error: err => {
@@ -67,6 +95,4 @@ export class MoradorList implements OnInit {
       }
     });
   }
-
-  newItem(): void { this.router.navigate(['/moradores/new']); }
 }

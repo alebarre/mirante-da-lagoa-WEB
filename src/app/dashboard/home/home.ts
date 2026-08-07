@@ -3,6 +3,13 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { AuthResponse } from '../../core/models/auth.model';
 
+interface MenuItem {
+  label: string;
+  path: string;
+  icon: string;
+  roles?: string[];
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.html',
@@ -12,18 +19,36 @@ export class Home implements OnInit {
   auth: AuthResponse | null = null;
   sidebarOpen = false;
 
-  menu = [
-    { label: 'Funcionários', path: '/funcionarios', icon: 'fa-hard-hat' },
-    { label: 'Compromissos', path: '/compromissos', icon: 'fa-calendar-alt' },
-    { label: 'Obrigações Trabalhistas', path: '/obrigacoes', icon: 'fa-clipboard-check' },
-    { label: 'Moradores', path: '/moradores', icon: 'fa-home' },
-    { label: 'Eventos', path: '/eventos', icon: 'fa-glass-cheers' }
+  allMenu: MenuItem[] = [
+    { label: 'Funcionários', path: '/funcionarios', icon: 'fa-hard-hat', roles: ['ADMIN', 'SINDICO', 'PORTARIA', 'FUNCIONARIO'] },
+    { label: 'Compromissos', path: '/compromissos', icon: 'fa-calendar-alt', roles: ['ADMIN', 'SINDICO', 'PORTARIA', 'FUNCIONARIO'] },
+    { label: 'Obrigações Trabalhistas', path: '/obrigacoes', icon: 'fa-clipboard-check', roles: ['ADMIN', 'SINDICO'] },
+    { label: 'Moradores', path: '/moradores', icon: 'fa-home', roles: ['ADMIN', 'SINDICO', 'PORTARIA'] },
+    { label: 'Eventos', path: '/eventos', icon: 'fa-glass-cheers', roles: ['ADMIN', 'SINDICO', 'PORTARIA', 'FUNCIONARIO', 'MORADOR'] }
   ];
+
+  menu: MenuItem[] = [];
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.authService.auth$.subscribe(a => this.auth = a);
+    this.authService.auth$.subscribe(a => {
+      this.auth = a;
+      this.buildMenu();
+    });
+  }
+
+  private buildMenu(): void {
+    if (!this.auth) {
+      this.menu = [];
+      return;
+    }
+    const role = this.auth.role;
+    if (role === 'MORADOR') {
+      this.menu = this.allMenu.filter(item => item.label === 'Eventos');
+      return;
+    }
+    this.menu = this.allMenu.filter(item => !item.roles || item.roles.includes(role));
   }
 
   toggleSidebar(): void {

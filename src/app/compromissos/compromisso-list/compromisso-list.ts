@@ -4,6 +4,7 @@ import { ApiService } from '../../core/services/api.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ModalService } from '../../core/services/modal.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Compromisso } from '../../core/models/compromisso.model';
 
 @Component({
@@ -14,6 +15,7 @@ import { Compromisso } from '../../core/models/compromisso.model';
 export class CompromissoList implements OnInit {
   items: Compromisso[] = [];
   loading = false;
+  isMorador = false;
 
   constructor(
     private api: ApiService,
@@ -21,10 +23,17 @@ export class CompromissoList implements OnInit {
     private cdr: ChangeDetectorRef,
     private toastService: ToastService,
     private modalService: ModalService,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private authService: AuthService
   ) {}
 
-  ngOnInit(): void { this.load(); }
+  ngOnInit(): void {
+    this.authService.auth$.subscribe(a => {
+      this.isMorador = a?.role === 'MORADOR';
+      this.cdr.detectChanges();
+    });
+    this.load();
+  }
 
   load(): void {
     this.loading = true;
@@ -43,10 +52,29 @@ export class CompromissoList implements OnInit {
     });
   }
 
-  edit(id?: string): void { if (id) this.router.navigate(['/compromissos/edit', id]); }
+  newItem(): void {
+    if (this.isMorador) {
+      this.toastService.warning('Moradores não podem criar compromissos.');
+      return;
+    }
+    this.router.navigate(['/compromissos/new']);
+  }
+
+  edit(id?: string): void {
+    if (!id) return;
+    if (this.isMorador) {
+      this.toastService.warning('Moradores não podem editar compromissos.');
+      return;
+    }
+    this.router.navigate(['/compromissos/edit', id]);
+  }
 
   async remove(id?: string): Promise<void> {
     if (!id) return;
+    if (this.isMorador) {
+      this.toastService.warning('Moradores não podem excluir compromissos.');
+      return;
+    }
     const confirmed = await this.modalService.open({
       title: 'Excluir compromisso',
       message: 'Deseja realmente excluir este compromisso?',
@@ -58,7 +86,7 @@ export class CompromissoList implements OnInit {
 
     this.api.delete(`/compromissos/${id}`).subscribe({
       next: () => {
-        this.toastService.success('Compromisso excluÃ­do com sucesso!');
+        this.toastService.success('Compromisso excluído com sucesso.');
         this.load();
       },
       error: err => {
@@ -67,6 +95,4 @@ export class CompromissoList implements OnInit {
       }
     });
   }
-
-  newItem(): void { this.router.navigate(['/compromissos/new']); }
 }

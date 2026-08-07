@@ -7,10 +7,10 @@ export class ErrorHandlerService {
     if (err instanceof HttpErrorResponse) {
       if (err.error?.message) return err.error.message;
       if (err.error?.error) return err.error.error;
-      if (err.status === 0) return 'NÃ£o foi possÃ­vel conectar ao servidor. Verifique sua internet.';
-      if (err.status === 401) return 'Sua sessÃ£o expirou. FaÃ§a login novamente.';
-      if (err.status === 403) return 'VocÃª nÃ£o tem permissÃ£o para realizar esta aÃ§Ã£o.';
-      if (err.status === 404) return 'Recurso nÃ£o encontrado.';
+      if (err.status === 0) return 'Não foi possível conectar ao servidor. Verifique sua internet.';
+      if (err.status === 401) return 'Sua sessão expirou. Faça login novamente.';
+      if (err.status === 403) return 'Você não tem permissão para realizar esta ação.';
+      if (err.status === 404) return 'Recurso não encontrado.';
       if (err.status >= 500) return 'Erro no servidor. Tente novamente mais tarde.';
     }
     if (err?.message) return err.message;

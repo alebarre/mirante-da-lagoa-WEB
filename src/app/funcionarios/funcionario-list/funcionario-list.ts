@@ -4,6 +4,7 @@ import { ApiService } from '../../core/services/api.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ModalService } from '../../core/services/modal.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Funcionario } from '../../core/models/funcionario.model';
 
 @Component({
@@ -14,6 +15,7 @@ import { Funcionario } from '../../core/models/funcionario.model';
 export class FuncionarioList implements OnInit {
   items: Funcionario[] = [];
   loading = false;
+  isMorador = false;
 
   constructor(
     private api: ApiService,
@@ -21,10 +23,15 @@ export class FuncionarioList implements OnInit {
     private cdr: ChangeDetectorRef,
     private toastService: ToastService,
     private modalService: ModalService,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.authService.auth$.subscribe(a => {
+      this.isMorador = a?.role === 'MORADOR';
+      this.cdr.detectChanges();
+    });
     this.load();
   }
 
@@ -37,7 +44,7 @@ export class FuncionarioList implements OnInit {
         this.cdr.detectChanges();
       },
       error: err => {
-        const message = this.errorHandler.extractMessage(err, 'Erro ao carregar funcionÃ¡rios');
+        const message = this.errorHandler.extractMessage(err, 'Erro ao carregar funcionários');
         this.toastService.error(message);
         this.loading = false;
         this.cdr.detectChanges();
@@ -45,15 +52,32 @@ export class FuncionarioList implements OnInit {
     });
   }
 
+  newItem(): void {
+    if (this.isMorador) {
+      this.toastService.warning('Moradores não podem cadastrar funcionários.');
+      return;
+    }
+    this.router.navigate(['/funcionarios/new']);
+  }
+
   edit(id?: string): void {
-    if (id) this.router.navigate(['/funcionarios/edit', id]);
+    if (!id) return;
+    if (this.isMorador) {
+      this.toastService.warning('Moradores não podem editar funcionários.');
+      return;
+    }
+    this.router.navigate(['/funcionarios/edit', id]);
   }
 
   async remove(id?: string): Promise<void> {
     if (!id) return;
+    if (this.isMorador) {
+      this.toastService.warning('Moradores não podem excluir funcionários.');
+      return;
+    }
     const confirmed = await this.modalService.open({
-      title: 'Excluir funcionÃ¡rio',
-      message: 'Tem certeza que deseja excluir este funcionÃ¡rio? Esta aÃ§Ã£o nÃ£o poderÃ¡ ser desfeita.',
+      title: 'Excluir funcionário',
+      message: 'Tem certeza que deseja excluir este funcionário? Esta ação não poderá ser desfeita.',
       type: 'danger',
       confirmText: 'Excluir',
       cancelText: 'Cancelar'
@@ -62,17 +86,13 @@ export class FuncionarioList implements OnInit {
 
     this.api.delete(`/funcionarios/${id}`).subscribe({
       next: () => {
-        this.toastService.success('FuncionÃ¡rio excluÃ­do com sucesso!');
+        this.toastService.success('Funcionário excluído com sucesso.');
         this.load();
       },
       error: err => {
-        const message = this.errorHandler.extractMessage(err, 'Erro ao excluir funcionÃ¡rio');
+        const message = this.errorHandler.extractMessage(err, 'Erro ao excluir funcionário');
         this.toastService.error(message);
       }
     });
-  }
-
-  newItem(): void {
-    this.router.navigate(['/funcionarios/new']);
   }
 }
