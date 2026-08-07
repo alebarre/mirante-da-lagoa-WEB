@@ -7,6 +7,7 @@ import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ObrigacaoTrabalhista } from '../../core/models/obrigacao.model';
 import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
+import { DetailAction, DetailField, DetailModalService } from '../../core/services/detail-modal.service';
 
 @Component({
   selector: 'app-obrigacao-list',
@@ -29,6 +30,7 @@ export class ObrigacaoList implements OnInit {
     private cdr: ChangeDetectorRef,
     private toastService: ToastService,
     private modalService: ModalService,
+    private detailModalService: DetailModalService,
     private errorHandler: ErrorHandlerService,
     private authService: AuthService
   ) {}
@@ -78,6 +80,33 @@ export class ObrigacaoList implements OnInit {
 
   selectItem(item: ObrigacaoTrabalhista): void {
     this.selectedId = item.id;
+    const fields: DetailField[] = [
+      { label: 'Periodicidade', value: item.periodicity, icon: 'fa-sync' },
+      { label: 'Vencimento', value: item.dueDate ? new Date(item.dueDate).toLocaleDateString('pt-BR') : '-', icon: 'fa-calendar-day' },
+      { label: 'Concluído em', value: item.completedAt ? new Date(item.completedAt).toLocaleDateString('pt-BR') : '-', icon: 'fa-calendar-check' },
+      { label: 'Responsável', value: item.responsible || '-', icon: 'fa-user-tie' },
+      { label: 'Status', value: item.status || '-', icon: 'fa-tag' }
+    ];
+    if (item.description) {
+      fields.unshift({ label: 'Descrição', value: item.description, icon: 'fa-align-left' });
+    }
+    if (item.notes) {
+      fields.push({ label: 'Observações', value: item.notes, icon: 'fa-sticky-note' });
+    }
+    const actions: DetailAction[] = [];
+    if (this.canManage) {
+      actions.push(
+        { label: 'Editar', icon: 'fa-edit', cssClass: 'btn-secondary', handler: () => this.edit(item.id) },
+        { label: 'Excluir', icon: 'fa-trash-alt', cssClass: 'btn-danger', handler: () => this.remove(item.id) }
+      );
+    }
+    this.detailModalService.open({
+      title: item.name,
+      icon: 'fa-clipboard-check',
+      subtitle: item.status,
+      fields,
+      actions
+    });
   }
 
   trackById(index: number, item: ObrigacaoTrabalhista): string | undefined {

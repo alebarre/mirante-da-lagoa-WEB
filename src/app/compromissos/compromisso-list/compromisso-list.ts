@@ -7,6 +7,7 @@ import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Compromisso } from '../../core/models/compromisso.model';
 import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
+import { DetailAction, DetailField, DetailModalService } from '../../core/services/detail-modal.service';
 
 @Component({
   selector: 'app-compromisso-list',
@@ -29,6 +30,7 @@ export class CompromissoList implements OnInit {
     private cdr: ChangeDetectorRef,
     private toastService: ToastService,
     private modalService: ModalService,
+    private detailModalService: DetailModalService,
     private errorHandler: ErrorHandlerService,
     private authService: AuthService
   ) {}
@@ -78,6 +80,29 @@ export class CompromissoList implements OnInit {
 
   selectItem(item: Compromisso): void {
     this.selectedId = item.id;
+    const fields: DetailField[] = [
+      { label: 'Data/Hora', value: item.scheduledAt ? new Date(item.scheduledAt).toLocaleString('pt-BR') : '-', icon: 'fa-clock' },
+      { label: 'Local', value: item.location || '-', icon: 'fa-map-marker-alt' },
+      { label: 'Responsável', value: item.responsible || '-', icon: 'fa-user-tie' },
+      { label: 'Status', value: item.status || '-', icon: 'fa-tag' }
+    ];
+    if (item.description) {
+      fields.unshift({ label: 'Descrição', value: item.description, icon: 'fa-align-left' });
+    }
+    const actions: DetailAction[] = [];
+    if (!this.isMorador) {
+      actions.push(
+        { label: 'Editar', icon: 'fa-edit', cssClass: 'btn-secondary', handler: () => this.edit(item.id) },
+        { label: 'Excluir', icon: 'fa-trash-alt', cssClass: 'btn-danger', handler: () => this.remove(item.id) }
+      );
+    }
+    this.detailModalService.open({
+      title: item.title,
+      icon: 'fa-calendar-alt',
+      subtitle: item.status,
+      fields,
+      actions
+    });
   }
 
   trackById(index: number, item: Compromisso): string | undefined {

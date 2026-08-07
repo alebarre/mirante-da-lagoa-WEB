@@ -1,0 +1,35 @@
+<div class="detail-modal-overlay" *ngIf="detailModal$ | async as modal" (click)="detailModalService.close()">
+  <div class="detail-modal-container" (click)="$event.stopPropagation()">
+    <div class="detail-modal-header">
+      <i class="fas modal-icon" [ngClass]="modal.icon || 'fa-info-circle'"></i>
+      <div class="detail-modal-titles">
+        <h3>{{ modal.title }}</h3>
+        <span *ngIf="modal.subtitle" class="detail-modal-subtitle">{{ modal.subtitle }}</span>
+      </div>
+      <button class="btn-close" (click)="detailModalService.close()" title="Fechar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="detail-modal-body">
+      <div class="detail-field" *ngFor="let field of modal.fields">
+        <span class="detail-field-label" *ngIf="field.label">
+          <i class="fas" [ngClass]="field.icon || 'fa-angle-right'"></i> {{ field.label }}
+        </span>
+        <span class="detail-field-value" [innerHTML]="field.value"></span>
+      </div>
+    </div>
+
+    <div class="detail-modal-footer" *ngIf="modal.actions && modal.actions.length > 0">
+      <button
+        *ngFor="let action of modal.actions"
+        type="button"
+        [class]="'btn-action ' + (action.cssClass || '')"
+        (click)="action.handler(); detailModalService.close()"
+      >
+        <i class="fas" *ngIf="action.icon" [ngClass]="action.icon"></i>
+        {{ action.label }}
+      </button>
+    </div>
+  </div>
+</div>

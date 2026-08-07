@@ -7,6 +7,7 @@ import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Evento } from '../../core/models/evento.model';
 import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
+import { DetailAction, DetailField, DetailModalService } from '../../core/services/detail-modal.service';
 
 @Component({
   selector: 'app-evento-list',
@@ -29,6 +30,7 @@ export class EventoList implements OnInit {
     private cdr: ChangeDetectorRef,
     private toastService: ToastService,
     private modalService: ModalService,
+    private detailModalService: DetailModalService,
     private errorHandler: ErrorHandlerService,
     private authService: AuthService
   ) {}
@@ -73,6 +75,35 @@ export class EventoList implements OnInit {
 
   selectItem(item: Evento): void {
     this.selectedId = item.id;
+    const fields: DetailField[] = [
+      { label: 'Início', value: item.startAt ? new Date(item.startAt).toLocaleString('pt-BR') : '-', icon: 'fa-hourglass-start' },
+      { label: 'Término', value: item.endAt ? new Date(item.endAt).toLocaleString('pt-BR') : '-', icon: 'fa-hourglass-end' },
+      { label: 'Local', value: item.location || '-', icon: 'fa-map-marker-alt' },
+      { label: 'Organizador', value: item.organizer || '-', icon: 'fa-user-tie' },
+      { label: 'Status', value: item.status || '-', icon: 'fa-tag' },
+      { label: 'Máx. participantes', value: item.maxParticipants !== undefined ? String(item.maxParticipants) : '-', icon: 'fa-users' },
+      { label: 'Restrito a moradores', value: item.restrictedToResidents ? 'Sim' : 'Não', icon: 'fa-lock' }
+    ];
+    if (item.description) {
+      fields.unshift({ label: 'Descrição', value: item.description, icon: 'fa-align-left' });
+    }
+    if (item.notes) {
+      fields.push({ label: 'Observações', value: item.notes, icon: 'fa-sticky-note' });
+    }
+    const actions: DetailAction[] = [];
+    if (!this.isMorador) {
+      actions.push(
+        { label: 'Editar', icon: 'fa-edit', cssClass: 'btn-secondary', handler: () => this.edit(item.id) },
+        { label: 'Excluir', icon: 'fa-trash-alt', cssClass: 'btn-danger', handler: () => this.remove(item.id) }
+      );
+    }
+    this.detailModalService.open({
+      title: item.title,
+      icon: 'fa-glass-cheers',
+      subtitle: item.status,
+      fields,
+      actions
+    });
   }
 
   trackById(index: number, item: Evento): string | undefined {

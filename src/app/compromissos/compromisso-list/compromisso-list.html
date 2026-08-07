@@ -47,8 +47,6 @@
       </div>
 
       <div class="card-body">
-        <p class="description" *ngIf="item.description">{{ item.description }}</p>
-
         <div class="info-row">
           <span class="info-label"><i class="fas fa-clock"></i> Data/Hora</span>
           <span class="info-value">{{ item.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</span>

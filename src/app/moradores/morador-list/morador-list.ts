@@ -7,6 +7,7 @@ import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Morador } from '../../core/models/morador.model';
 import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
+import { DetailAction, DetailField, DetailModalService } from '../../core/services/detail-modal.service';
 
 @Component({
   selector: 'app-morador-list',
@@ -29,6 +30,7 @@ export class MoradorList implements OnInit {
     private cdr: ChangeDetectorRef,
     private toastService: ToastService,
     private modalService: ModalService,
+    private detailModalService: DetailModalService,
     private errorHandler: ErrorHandlerService,
     private authService: AuthService
   ) {}
@@ -78,6 +80,38 @@ export class MoradorList implements OnInit {
 
   selectItem(item: Morador): void {
     this.selectedId = item.id;
+    const fields: DetailField[] = [
+      { label: 'Bloco', value: item.block, icon: 'fa-building' },
+      { label: 'Apartamento', value: item.apartment, icon: 'fa-door-closed' },
+      { label: 'Telefone', value: item.phone || '-', icon: 'fa-phone' },
+      { label: 'E-mail', value: item.email || '-', icon: 'fa-envelope' },
+      { label: 'CPF', value: item.cpf || '-', icon: 'fa-id-card' },
+      { label: 'RG', value: item.rg || '-', icon: 'fa-address-card' },
+      { label: 'Nascimento', value: item.birthDate ? new Date(item.birthDate).toLocaleDateString('pt-BR') : '-', icon: 'fa-birthday-cake' },
+      { label: 'Vaga', value: item.parkingSpot || '-', icon: 'fa-car' },
+      { label: 'Pets', value: item.pets || '-', icon: 'fa-paw' },
+      { label: 'Entrada', value: item.moveInDate ? new Date(item.moveInDate).toLocaleDateString('pt-BR') : '-', icon: 'fa-calendar-alt' },
+      { label: 'Saída', value: item.moveOutDate ? new Date(item.moveOutDate).toLocaleDateString('pt-BR') : '-', icon: 'fa-calendar-times' },
+      { label: 'Contato emergência', value: item.emergencyContact || '-', icon: 'fa-phone-alt' },
+      { label: 'Proprietário', value: item.owner ? 'Sim' : 'Não', icon: 'fa-home' }
+    ];
+    if (item.notes) {
+      fields.push({ label: 'Observações', value: item.notes, icon: 'fa-sticky-note' });
+    }
+    const actions: DetailAction[] = [];
+    if (!this.isMorador) {
+      actions.push(
+        { label: 'Editar', icon: 'fa-edit', cssClass: 'btn-secondary', handler: () => this.edit(item.id) },
+        { label: 'Excluir', icon: 'fa-trash-alt', cssClass: 'btn-danger', handler: () => this.remove(item.id) }
+      );
+    }
+    this.detailModalService.open({
+      title: item.fullName,
+      icon: 'fa-home',
+      subtitle: `Bloco ${item.block} · Apto ${item.apartment}`,
+      fields,
+      actions
+    });
   }
 
   trackById(index: number, item: Morador): string | undefined {

@@ -66,50 +66,6 @@
           <span class="info-label"><i class="fas fa-envelope"></i> E-mail</span>
           <span class="info-value">{{ item.email || '-' }}</span>
         </div>
-
-        <div class="info-row">
-          <span class="info-label"><i class="fas fa-id-card"></i> CPF</span>
-          <span class="info-value">{{ item.cpf || '-' }}</span>
-        </div>
-
-        <div class="info-row">
-          <span class="info-label"><i class="fas fa-address-card"></i> RG</span>
-          <span class="info-value">{{ item.rg || '-' }}</span>
-        </div>
-
-        <div class="info-row">
-          <span class="info-label"><i class="fas fa-birthday-cake"></i> Nascimento</span>
-          <span class="info-value">{{ item.birthDate | date:'dd/MM/yyyy' }}</span>
-        </div>
-
-        <div class="info-row">
-          <span class="info-label"><i class="fas fa-car"></i> Vaga</span>
-          <span class="info-value">{{ item.parkingSpot || '-' }}</span>
-        </div>
-
-        <div class="info-row">
-          <span class="info-label"><i class="fas fa-paw"></i> Pets</span>
-          <span class="info-value">{{ item.pets || '-' }}</span>
-        </div>
-
-        <div class="info-row">
-          <span class="info-label"><i class="fas fa-calendar-alt"></i> Entrada</span>
-          <span class="info-value">{{ item.moveInDate | date:'dd/MM/yyyy' }}</span>
-        </div>
-
-        <div class="info-row">
-          <span class="info-label"><i class="fas fa-calendar-times"></i> Saída</span>
-          <span class="info-value">{{ item.moveOutDate | date:'dd/MM/yyyy' }}</span>
-        </div>
-
-        <div class="info-row">
-          <span class="info-label"><i class="fas fa-phone-alt"></i> Contato emergência</span>
-          <span class="info-value">{{ item.emergencyContact || '-' }}</span>
-        </div>
-
-        <p class="notes" *ngIf="item.notes">
-          <i class="fas fa-sticky-note"></i> {{ item.notes }}
-        </p>
       </div>
 
       <div class="card-footer" *ngIf="!isMorador" (click)="$event.stopPropagation()">

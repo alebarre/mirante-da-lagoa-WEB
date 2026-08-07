@@ -47,8 +47,6 @@
       </div>
 
       <div class="card-body">
-        <p class="description" *ngIf="item.description">{{ item.description }}</p>
-
         <div class="info-row">
           <span class="info-label"><i class="fas fa-sync"></i> Periodicidade</span>
           <span class="info-value">{{ item.periodicity }}</span>
@@ -60,18 +58,9 @@
         </div>
 
         <div class="info-row">
-          <span class="info-label"><i class="fas fa-calendar-check"></i> Concluído em</span>
-          <span class="info-value">{{ item.completedAt | date:'dd/MM/yyyy' }}</span>
-        </div>
-
-        <div class="info-row">
           <span class="info-label"><i class="fas fa-user-tie"></i> Responsável</span>
           <span class="info-value">{{ item.responsible || '-' }}</span>
         </div>
-
-        <p class="notes" *ngIf="item.notes">
-          <i class="fas fa-sticky-note"></i> {{ item.notes }}
-        </p>
       </div>
 
       <div class="card-footer" *ngIf="canManage" (click)="$event.stopPropagation()">

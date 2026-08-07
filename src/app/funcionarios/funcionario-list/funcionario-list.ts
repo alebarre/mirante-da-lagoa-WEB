@@ -7,6 +7,7 @@ import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Funcionario } from '../../core/models/funcionario.model';
 import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
+import { DetailAction, DetailField, DetailModalService } from '../../core/services/detail-modal.service';
 
 @Component({
   selector: 'app-funcionario-list',
@@ -29,6 +30,7 @@ export class FuncionarioList implements OnInit {
     private cdr: ChangeDetectorRef,
     private toastService: ToastService,
     private modalService: ModalService,
+    private detailModalService: DetailModalService,
     private errorHandler: ErrorHandlerService,
     private authService: AuthService
   ) {}
@@ -78,6 +80,38 @@ export class FuncionarioList implements OnInit {
 
   selectItem(item: Funcionario): void {
     this.selectedId = item.id;
+    const fields: DetailField[] = [
+      { label: 'Cargo', value: item.position || '-', icon: 'fa-briefcase' },
+      { label: 'Departamento', value: item.department || '-', icon: 'fa-building' },
+      { label: 'Telefone', value: item.phone || '-', icon: 'fa-phone' },
+      { label: 'E-mail', value: item.email || '-', icon: 'fa-envelope' },
+      { label: 'CPF', value: item.cpf || '-', icon: 'fa-id-card' },
+      { label: 'RG', value: item.rg || '-', icon: 'fa-address-card' },
+      { label: 'Nascimento', value: item.birthDate ? new Date(item.birthDate).toLocaleDateString('pt-BR') : '-', icon: 'fa-birthday-cake' },
+      { label: 'Endereço', value: item.address || '-', icon: 'fa-map-marked-alt' },
+      { label: 'Admissão', value: item.hireDate ? new Date(item.hireDate).toLocaleDateString('pt-BR') : '-', icon: 'fa-calendar-check' },
+      { label: 'Demissão', value: item.terminationDate ? new Date(item.terminationDate).toLocaleDateString('pt-BR') : '-', icon: 'fa-calendar-times' },
+      { label: 'Salário', value: item.salary !== undefined ? item.salary.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-', icon: 'fa-money-bill-wave' },
+      { label: 'Regime', value: item.workRegime || '-', icon: 'fa-clock' },
+      { label: 'Conta bancária', value: item.bankAccount || '-', icon: 'fa-university' }
+    ];
+    if (item.notes) {
+      fields.push({ label: 'Observações', value: item.notes, icon: 'fa-sticky-note' });
+    }
+    const actions: DetailAction[] = [];
+    if (!this.isMorador) {
+      actions.push(
+        { label: 'Editar', icon: 'fa-edit', cssClass: 'btn-secondary', handler: () => this.edit(item.id) },
+        { label: 'Excluir', icon: 'fa-trash-alt', cssClass: 'btn-danger', handler: () => this.remove(item.id) }
+      );
+    }
+    this.detailModalService.open({
+      title: item.fullName,
+      icon: 'fa-hard-hat',
+      subtitle: item.position,
+      fields,
+      actions
+    });
   }
 
   trackById(index: number, item: Funcionario): string | undefined {
