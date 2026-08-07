@@ -7,20 +7,19 @@ import { catchError, tap } from 'rxjs/operators';
 export class LoggingInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const start = Date.now();
-    const body = req.body ? JSON.parse(JSON.stringify(req.body)) : undefined;
-    console.log(`[HTTP] REQ ${req.method} ${req.url}`, body ?? '');
+    console.log(`[HTTP] REQ ${req.method} ${req.url}`);
 
     return next.handle(req).pipe(
       tap(event => {
         if (event instanceof HttpResponse) {
           const elapsed = Date.now() - start;
-          console.log(`[HTTP] RES ${req.method} ${req.url} ${event.status} (${elapsed}ms)`, event.body);
+          console.log(`[HTTP] RES ${req.method} ${req.url} ${event.status} (${elapsed}ms)`);
         }
       }),
       catchError(err => {
         const elapsed = Date.now() - start;
         const status = err instanceof HttpErrorResponse ? err.status : '?';
-        console.error(`[HTTP] ERR ${req.method} ${req.url} ${status} (${elapsed}ms)`, err);
+        console.error(`[HTTP] ERR ${req.method} ${req.url} ${status} (${elapsed}ms)`);
         return throwError(() => err);
       })
     );

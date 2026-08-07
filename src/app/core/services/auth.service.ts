@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import {
   AuthResponse,
   ForgotPasswordRequest,
   LoginRequest,
-  RefreshTokenRequest,
   RegisterRequest,
   ResetPasswordRequest,
   Role
@@ -23,16 +22,16 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  private log(action: string, data?: unknown): void {
-    console.log(`[AuthService] ${action}`, data ?? '');
+  private log(action: string): void {
+    console.log(`[AuthService] ${action}`);
   }
 
   private post<T>(path: string, body: any): Observable<T> {
-    this.log(`${path} request`, body);
+    this.log(`${path} request`);
     return this.http.post<T>(`${API_URL}${path}`, body).pipe(
-      tap(res => this.log(`${path} response`, res)),
+      tap(() => this.log(`${path} response`)),
       catchError(err => {
-        console.error(`[AuthService] ${path} error`, err);
+        console.error(`[AuthService] ${path} error`);
         return throwError(() => err);
       })
     );
@@ -77,7 +76,7 @@ export class AuthService {
   }
 
   setAuth(auth: AuthResponse): void {
-    this.log('setAuth', auth);
+    this.log('setAuth');
     localStorage.setItem(STORAGE_KEY, JSON.stringify(auth));
     this.authSubject.next(auth);
   }
