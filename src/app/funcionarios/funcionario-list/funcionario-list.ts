@@ -137,8 +137,8 @@ export class FuncionarioList implements OnInit {
     });
   }
 
-  private formatCurrency(value?: number): string {
-    return value !== undefined ? value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-';
+  private formatCurrency(value?: number | null): string {
+    return value !== undefined && value !== null ? value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-';
   }
 
   trackById(index: number, item: Funcionario): string | undefined {
