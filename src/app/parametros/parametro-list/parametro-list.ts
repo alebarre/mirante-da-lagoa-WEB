@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { finalize, forkJoin, Subject, takeUntil, timeout, TimeoutError } from 'rxjs';
 import { ParametroService } from '../../core/services/parametro.service';
 import { ParametroCondominio } from '../../core/models/parametro.model';
 
@@ -32,20 +34,38 @@ interface ParametroFormValue {
   styleUrls: ['./parametro-list.scss'],
   standalone: false
 })
-export class ParametroList implements OnInit {
+export class ParametroList implements OnInit, OnDestroy {
   parametros: ParametroCondominio[] = [];
   form!: FormGroup;
   salvo = false;
   erro: string | null = null;
   carregando = false;
 
-  constructor(private service: ParametroService, private fb: FormBuilder) {}
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private service: ParametroService,
+    private fb: FormBuilder,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
+    console.log('[ParametroList] ngOnInit executado');
+    this.inicializarFormulario();
+    this.carregar();
+  }
+
+  ngOnDestroy(): void {
+    console.log('[ParametroList] ngOnDestroy executado');
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private inicializarFormulario(): void {
     this.form = this.fb.group({
       itens: this.fb.array<FormGroup>([])
     });
-    this.carregar();
   }
 
   get itens(): FormArray<FormGroup> {
@@ -54,17 +74,34 @@ export class ParametroList implements OnInit {
 
   carregar(): void {
     this.carregando = true;
-    this.service.listAll().subscribe({
-      next: (res) => {
-        this.parametros = res.filter(p => p.categoria === 'FOLHA_PAGAMENTO');
-        this.montarFormulario();
-        this.carregando = false;
-      },
-      error: () => {
-        this.erro = 'Erro ao carregar parâmetros.';
-        this.carregando = false;
-      }
-    });
+    this.erro = null;
+    console.log('[ParametroList] Iniciando carregamento de parâmetros');
+
+    this.service.listAll()
+      .pipe(
+        takeUntil(this.destroy$),
+        timeout(10000),
+        finalize(() => {
+          this.carregando = false;
+          this.cdr.detectChanges();
+          console.log('[ParametroList] Carregamento finalizado. carregando=', this.carregando, 'itens=', this.itens.length);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          console.log('[ParametroList] Resposta recebida:', res.length, 'itens');
+          this.parametros = res.filter(p => p.categoria === 'FOLHA_PAGAMENTO');
+          this.montarFormulario();
+        },
+        error: (err) => {
+          if (err instanceof TimeoutError) {
+            this.erro = 'A requisição demorou mais que o esperado. Tente recarregar a página.';
+          } else {
+            this.erro = 'Erro ao carregar parâmetros.';
+          }
+          console.error('[ParametroList] Erro ao carregar parâmetros:', err);
+        }
+      });
   }
 
   private montarFormulario(): void {
@@ -90,6 +127,8 @@ export class ParametroList implements OnInit {
     }
     this.erro = null;
     this.salvo = false;
+    this.carregando = true;
+
     const atualizacoes = this.itens.controls.map((grupo) => {
       const valor = grupo.value as ParametroFormValue;
       const body: ParametroCondominio = {
@@ -101,30 +140,27 @@ export class ParametroList implements OnInit {
       };
       return this.service.update(valor.id, body);
     });
-    let concluidas = 0;
-    let falhas = 0;
-    atualizacoes.forEach(obs$ => obs$.subscribe({
-      next: () => {
-        concluidas++;
-        if (concluidas + falhas === atualizacoes.length) {
-          this.finalizarSalvar(falhas === 0);
+
+    forkJoin(atualizacoes)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.carregando = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.salvo = true;
+          this.carregar();
+        },
+        error: () => {
+          this.erro = 'Erro ao salvar alguns parâmetros.';
         }
-      },
-      error: () => {
-        falhas++;
-        if (concluidas + falhas === atualizacoes.length) {
-          this.finalizarSalvar(false);
-        }
-      }
-    }));
+      });
   }
 
-  private finalizarSalvar(sucesso: boolean): void {
-    this.salvo = sucesso;
-    if (!sucesso) {
-      this.erro = 'Erro ao salvar alguns parâmetros.';
-    }
-    this.carregar();
+  voltar(): void {
+    this.router.navigate(['/dashboard']);
   }
 
   private arredondar(valor: number): number {
