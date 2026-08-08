@@ -1,3 +1,12 @@
+export interface FuncionarioOcorrencia {
+  id?: string;
+  funcionarioId?: string;
+  tipo: string;
+  data?: string;
+  descricao?: string;
+  anexo?: string;
+}
+
 export interface Funcionario {
   id?: string;
   fullName: string;
@@ -15,4 +24,21 @@ export interface Funcionario {
   workRegime?: string;
   bankAccount?: string;
   notes?: string;
+
+  // Encargos e benefícios mensais
+  inssEmployer?: number;
+  fgts?: number;
+  irrf?: number;
+  transportAllowance?: number;
+  mealAllowance?: number;
+  healthInsurance?: number;
+  otherBenefits?: number;
+
+  // Provisões trabalhistas mensais
+  thirteenthSalaryProvision?: number;
+  vacationProvision?: number;
+  vacationThirdProvision?: number;
+  severanceFineProvision?: number;
+
+  ocorrencias?: FuncionarioOcorrencia[];
 }

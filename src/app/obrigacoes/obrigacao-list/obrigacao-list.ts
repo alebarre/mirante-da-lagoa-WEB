@@ -6,6 +6,7 @@ import { ModalService } from '../../core/services/modal.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ObrigacaoTrabalhista } from '../../core/models/obrigacao.model';
+import { FuncionarioResumoFinanceiro } from '../../core/models/funcionario-resumo.model';
 import { filterByExactField, filterByText } from '../../core/utils/filter.utils';
 import { DetailAction, DetailField, DetailModalService } from '../../core/services/detail-modal.service';
 
@@ -18,6 +19,7 @@ import { DetailAction, DetailField, DetailModalService } from '../../core/servic
 export class ObrigacaoList implements OnInit {
   items: ObrigacaoTrabalhista[] = [];
   filteredItems: ObrigacaoTrabalhista[] = [];
+  resumo?: FuncionarioResumoFinanceiro;
   loading = false;
   canManage = false;
   selectedId?: string;
@@ -57,6 +59,16 @@ export class ObrigacaoList implements OnInit {
         this.toastService.error(message);
         this.loading = false;
         this.cdr.detectChanges();
+      }
+    });
+
+    this.api.get<FuncionarioResumoFinanceiro>('/funcionarios/resumo-financeiro').subscribe({
+      next: r => {
+        this.resumo = r;
+        this.cdr.detectChanges();
+      },
+      error: err => {
+        console.error('[ObrigacaoList] Erro ao carregar resumo financeiro');
       }
     });
   }
@@ -111,6 +123,10 @@ export class ObrigacaoList implements OnInit {
 
   trackById(index: number, item: ObrigacaoTrabalhista): string | undefined {
     return item.id;
+  }
+
+  formatCurrency(value?: number): string {
+    return value !== undefined ? value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-';
   }
 
   newItem(): void {

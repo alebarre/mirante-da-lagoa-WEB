@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
-import { Funcionario } from '../../core/models/funcionario.model';
+import { Funcionario, FuncionarioOcorrencia } from '../../core/models/funcionario.model';
+
+const OCORRENCIA_TIPOS = [
+  'OBSERVACAO', 'ATESTADO', 'LICENCA', 'AFASTAMENTO', 'FERIAS',
+  'ADVERTENCIA', 'SUSPENSAO', 'TREINAMENTO', 'PROMOCAO', 'DEMISSAO', 'OUTRO'
+];
 
 @Component({
   selector: 'app-funcionario-form',
@@ -15,6 +20,7 @@ export class FuncionarioForm implements OnInit {
   form: FormGroup;
   id: string | null = null;
   loading = false;
+  ocorrenciaTipos = OCORRENCIA_TIPOS;
 
   constructor(
     private fb: FormBuilder,
@@ -39,21 +45,66 @@ export class FuncionarioForm implements OnInit {
       salary: [null],
       workRegime: [''],
       bankAccount: [''],
-      notes: ['']
+      notes: [''],
+
+      inssEmployer: [null],
+      fgts: [null],
+      irrf: [null],
+      transportAllowance: [null],
+      mealAllowance: [null],
+      healthInsurance: [null],
+      otherBenefits: [null],
+
+      thirteenthSalaryProvision: [null],
+      vacationProvision: [null],
+      vacationThirdProvision: [null],
+      severanceFineProvision: [null],
+
+      ocorrencias: this.fb.array([])
     });
+  }
+
+  get ocorrencias(): FormArray {
+    return this.form.get('ocorrencias') as FormArray;
   }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
     if (this.id) {
       this.api.get<Funcionario>(`/funcionarios/${this.id}`).subscribe({
-        next: data => this.form.patchValue(data),
+        next: data => {
+          this.form.patchValue(data);
+          this.setOcorrencias(data.ocorrencias || []);
+        },
         error: err => {
           const message = this.errorHandler.extractMessage(err, 'Erro ao carregar funcionário');
           this.toastService.error(message);
         }
       });
     }
+  }
+
+  private setOcorrencias(items: FuncionarioOcorrencia[]): void {
+    this.ocorrencias.clear();
+    items.forEach(item => this.ocorrencias.push(this.buildOcorrencia(item)));
+  }
+
+  private buildOcorrencia(item?: FuncionarioOcorrencia): FormGroup {
+    return this.fb.group({
+      id: [item?.id || null],
+      tipo: [item?.tipo || 'OBSERVACAO', Validators.required],
+      data: [item?.data || ''],
+      descricao: [item?.descricao || ''],
+      anexo: [item?.anexo || '']
+    });
+  }
+
+  addOcorrencia(): void {
+    this.ocorrencias.push(this.buildOcorrencia());
+  }
+
+  removeOcorrencia(index: number): void {
+    this.ocorrencias.removeAt(index);
   }
 
   save(): void {

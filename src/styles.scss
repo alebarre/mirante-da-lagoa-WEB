@@ -176,6 +176,94 @@ img, video, table, iframe { max-width: 100%; }
   .form-row { grid-template-columns: 1fr; }
 }
 
+/* Itens dinamicos de formulario (ocorrencias, etc.) */
+.ocorrencia-item {
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 16px;
+
+  .btn-danger {
+    margin-top: 8px;
+    width: 100%;
+  }
+}
+
+form > .btn-secondary {
+  margin-bottom: 20px;
+}
+
+/* Totalizadores em cards */
+.resumo-totais {
+  margin-top: 12px;
+  padding: 14px;
+  background: var(--color-gray-50);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-gray-200);
+
+  .totais-titulo {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--color-gray-500);
+    margin-bottom: 10px;
+
+    i {
+      margin-right: 6px;
+    }
+  }
+
+  .totais-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .totais-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    background: var(--color-white);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-gray-200);
+  }
+
+  .totais-label {
+    font-size: 11px;
+    color: var(--color-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .totais-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    word-break: break-word;
+  }
+
+  .totais-destaque {
+    grid-column: 1 / -1;
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+
+    .totais-label,
+    .totais-value {
+      color: var(--color-white);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .resumo-totais .totais-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Buttons */
 button {
   padding: 11px 18px;

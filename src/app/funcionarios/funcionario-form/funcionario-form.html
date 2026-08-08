@@ -5,6 +5,7 @@
   </h2>
 
   <form [formGroup]="form" (ngSubmit)="save()">
+    <h3><i class="fas fa-user"></i> Dados pessoais</h3>
     <div class="form-row">
       <div class="form-group">
         <label><i class="fas fa-user"></i> Nome completo *</label>
@@ -43,6 +44,7 @@
       <input formControlName="address" />
     </div>
 
+    <h3><i class="fas fa-briefcase"></i> Dados profissionais</h3>
     <div class="form-row">
       <div class="form-group">
         <label><i class="fas fa-briefcase"></i> Cargo</label>
@@ -68,7 +70,7 @@
     <div class="form-row">
       <div class="form-group">
         <label><i class="fas fa-money-bill-wave"></i> Salario</label>
-        <input type="number" formControlName="salary" />
+        <input type="number" step="0.01" formControlName="salary" />
       </div>
       <div class="form-group">
         <label><i class="fas fa-clock"></i> Regime</label>
@@ -86,8 +88,103 @@
       <input formControlName="bankAccount" />
     </div>
 
+    <h3><i class="fas fa-calculator"></i> Encargos e beneficios mensais</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label><i class="fas fa-shield-alt"></i> INSS patronal</label>
+        <input type="number" step="0.01" formControlName="inssEmployer" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-piggy-bank"></i> FGTS</label>
+        <input type="number" step="0.01" formControlName="fgts" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label><i class="fas fa-file-invoice-dollar"></i> IRRF</label>
+        <input type="number" step="0.01" formControlName="irrf" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-bus"></i> Vale transporte</label>
+        <input type="number" step="0.01" formControlName="transportAllowance" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label><i class="fas fa-utensils"></i> Vale alimentacao/refeicao</label>
+        <input type="number" step="0.01" formControlName="mealAllowance" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-heartbeat"></i> Plano de saude</label>
+        <input type="number" step="0.01" formControlName="healthInsurance" />
+      </div>
+    </div>
+
     <div class="form-group">
-      <label><i class="fas fa-sticky-note"></i> Observacoes</label>
+      <label><i class="fas fa-plus-circle"></i> Outros beneficios</label>
+      <input type="number" step="0.01" formControlName="otherBenefits" />
+    </div>
+
+    <h3><i class="fas fa-piggy-bank"></i> Provisoes trabalhistas mensais</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label><i class="fas fa-calendar"></i> 13º salario</label>
+        <input type="number" step="0.01" formControlName="thirteenthSalaryProvision" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-umbrella-beach"></i> Ferias</label>
+        <input type="number" step="0.01" formControlName="vacationProvision" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label><i class="fas fa-umbrella-beach"></i> 1/3 de ferias</label>
+        <input type="number" step="0.01" formControlName="vacationThirdProvision" />
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-exclamation-triangle"></i> Multa rescisoria estimada</label>
+        <input type="number" step="0.01" formControlName="severanceFineProvision" />
+      </div>
+    </div>
+
+    <h3><i class="fas fa-history"></i> Historico de ocorrencias</h3>
+    <div formArrayName="ocorrencias">
+      <div class="ocorrencia-item" *ngFor="let ocorrencia of ocorrencias.controls; let i = index" [formGroupName]="i">
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-tag"></i> Tipo</label>
+            <select formControlName="tipo">
+              <option *ngFor="let tipo of ocorrenciaTipos" [value]="tipo">{{ tipo }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-calendar"></i> Data</label>
+            <input type="date" formControlName="data" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-align-left"></i> Descricao</label>
+          <textarea formControlName="descricao" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-paperclip"></i> Anexo (URL)</label>
+          <input formControlName="anexo" />
+        </div>
+        <button type="button" class="btn-danger" (click)="removeOcorrencia(i)">
+          <i class="fas fa-trash-alt"></i> Remover ocorrencia
+        </button>
+      </div>
+    </div>
+
+    <button type="button" class="btn-secondary" (click)="addOcorrencia()">
+      <i class="fas fa-plus"></i> Adicionar ocorrencia
+    </button>
+
+    <div class="form-group">
+      <label><i class="fas fa-sticky-note"></i> Observacoes gerais</label>
       <textarea formControlName="notes" rows="3"></textarea>
     </div>
 

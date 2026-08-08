@@ -63,6 +63,32 @@
         </div>
       </div>
 
+      <div class="resumo-totais" *ngIf="resumo" (click)="$event.stopPropagation()">
+        <span class="totais-titulo"><i class="fas fa-calculator"></i> Totalizadores</span>
+        <div class="totais-grid">
+          <div class="totais-item">
+            <span class="totais-label">Funcionários</span>
+            <span class="totais-value">{{ resumo.totalFuncionarios }}</span>
+          </div>
+          <div class="totais-item">
+            <span class="totais-label">Salários</span>
+            <span class="totais-value">{{ formatCurrency(resumo.totalSalarios) }}</span>
+          </div>
+          <div class="totais-item">
+            <span class="totais-label">Encargos/benefícios</span>
+            <span class="totais-value">{{ formatCurrency(resumo.totalEncargosBeneficios) }}</span>
+          </div>
+          <div class="totais-item">
+            <span class="totais-label">Provisões</span>
+            <span class="totais-value">{{ formatCurrency(resumo.totalProvisoes) }}</span>
+          </div>
+          <div class="totais-item totais-destaque">
+            <span class="totais-label">Custo total mensal</span>
+            <span class="totais-value">{{ formatCurrency(resumo.custoTotalMensal) }}</span>
+          </div>
+        </div>
+      </div>
+
       <div class="card-footer" *ngIf="canManage" (click)="$event.stopPropagation()">
         <button (click)="edit(item.id)" title="Editar" class="btn-action">
           <i class="fas fa-edit"></i>

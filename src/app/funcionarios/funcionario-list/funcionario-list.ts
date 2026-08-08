@@ -91,13 +91,36 @@ export class FuncionarioList implements OnInit {
       { label: 'Endereço', value: item.address || '-', icon: 'fa-map-marked-alt' },
       { label: 'Admissão', value: item.hireDate ? new Date(item.hireDate).toLocaleDateString('pt-BR') : '-', icon: 'fa-calendar-check' },
       { label: 'Demissão', value: item.terminationDate ? new Date(item.terminationDate).toLocaleDateString('pt-BR') : '-', icon: 'fa-calendar-times' },
-      { label: 'Salário', value: item.salary !== undefined ? item.salary.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-', icon: 'fa-money-bill-wave' },
+      { label: 'Salário', value: this.formatCurrency(item.salary), icon: 'fa-money-bill-wave' },
       { label: 'Regime', value: item.workRegime || '-', icon: 'fa-clock' },
       { label: 'Conta bancária', value: item.bankAccount || '-', icon: 'fa-university' }
     ];
-    if (item.notes) {
-      fields.push({ label: 'Observações', value: item.notes, icon: 'fa-sticky-note' });
+
+    fields.push({ label: 'INSS patronal', value: this.formatCurrency(item.inssEmployer), icon: 'fa-shield-alt' });
+    fields.push({ label: 'FGTS', value: this.formatCurrency(item.fgts), icon: 'fa-piggy-bank' });
+    fields.push({ label: 'IRRF', value: this.formatCurrency(item.irrf), icon: 'fa-file-invoice-dollar' });
+    fields.push({ label: 'Vale transporte', value: this.formatCurrency(item.transportAllowance), icon: 'fa-bus' });
+    fields.push({ label: 'Vale alimentação/refeição', value: this.formatCurrency(item.mealAllowance), icon: 'fa-utensils' });
+    fields.push({ label: 'Plano de saúde', value: this.formatCurrency(item.healthInsurance), icon: 'fa-heartbeat' });
+    fields.push({ label: 'Outros benefícios', value: this.formatCurrency(item.otherBenefits), icon: 'fa-plus-circle' });
+
+    fields.push({ label: 'Provisão 13º salário', value: this.formatCurrency(item.thirteenthSalaryProvision), icon: 'fa-calendar' });
+    fields.push({ label: 'Provisão férias', value: this.formatCurrency(item.vacationProvision), icon: 'fa-umbrella-beach' });
+    fields.push({ label: 'Provisão 1/3 férias', value: this.formatCurrency(item.vacationThirdProvision), icon: 'fa-umbrella-beach' });
+    fields.push({ label: 'Provisão multa rescisória', value: this.formatCurrency(item.severanceFineProvision), icon: 'fa-exclamation-triangle' });
+
+    if (item.ocorrencias && item.ocorrencias.length > 0) {
+      const ocorrenciasTexto = item.ocorrencias.map(o => {
+        const data = o.data ? new Date(o.data).toLocaleDateString('pt-BR') : 'sem data';
+        return `${o.tipo} (${data}): ${o.descricao || '-'}`;
+      }).join(' <br> ');
+      fields.push({ label: 'Ocorrências', value: ocorrenciasTexto, icon: 'fa-history' });
     }
+
+    if (item.notes) {
+      fields.push({ label: 'Observações gerais', value: item.notes, icon: 'fa-sticky-note' });
+    }
+
     const actions: DetailAction[] = [];
     if (!this.isMorador) {
       actions.push(
@@ -112,6 +135,10 @@ export class FuncionarioList implements OnInit {
       fields,
       actions
     });
+  }
+
+  private formatCurrency(value?: number): string {
+    return value !== undefined ? value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-';
   }
 
   trackById(index: number, item: Funcionario): string | undefined {
