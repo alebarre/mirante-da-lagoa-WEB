@@ -1,60 +1,85 @@
-# Frontend
+# mirante-da-lagoa-WEB
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.1.
+Frontend do sistema de gestão do condomínio Mirante da Lagoa - Saquarema/RJ.
 
-## Development server
+## Tecnologias
 
-To start a local development server, run:
+- Angular 21 (NgModule, não standalone)
+- TypeScript 5.9
+- RxJS
+- Font Awesome Free
+- Vitest (testes unitários)
+
+## Como executar
+
+### 1. Instalar dependências
+
+```bash
+cd mirante-da-lagoa-WEB
+npm install
+```
+
+### 2. Iniciar servidor de desenvolvimento
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Acesse `http://localhost:4200/`.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### 3. Build de produção
 
 ```bash
-ng generate component component-name
+ng build --configuration=production
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Funcionalidades principais
 
-```bash
-ng generate --help
+- Login com JWT e controle de acesso por perfil (ADMIN, SÍNDICO, PORTARIA, FUNCIONÁRIO, MORADOR)
+- Dashboard com acesso rápido aos módulos permitidos para cada perfil
+- Módulos de moradores, funcionários, compromissos, eventos e obrigações trabalhistas
+- Listagens responsivas em formato de cards
+- Modal de detalhes reutilizável para visualização de registros
+- **Gerenciamento de percentuais de encargos trabalhistas** (`/parametros`)
+  - Tela exclusiva para ADMIN configurar percentuais da CLT
+- **Cálculo automático de encargos no cadastro de funcionários**
+  - Ao informar salário e regime CLT, os valores de INSS patronal, FGTS, IRRF, benefícios e provisões são preenchidos automaticamente
+
+## Estrutura de pastas
+
+```
+src/app/
+  auth/           # Login e autenticação
+  core/           # Serviços, modelos, guards e interceptors
+  dashboard/      # Dashboard e menu
+  funcionarios/   # Cadastro e listagem de funcionários
+  compromissos/   # Compromissos e agendamentos
+  obrigacoes/     # Obrigações trabalhistas
+  moradores/      # Cadastro de moradores
+  eventos/        # Eventos do condomínio
+  parametros/     # Administração de percentuais de encargos
+  shared/         # Componentes e módulos compartilhados
 ```
 
-## Building
-
-To build the project run:
+## Comandos úteis
 
 ```bash
-ng build
-```
+# Servidor de desenvolvimento
+ng serve
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+# Build de desenvolvimento
+ng build --configuration=development
 
-## Running unit tests
+# Build de produção
+ng build --configuration=production
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
+# Testes unitários
 ng test
+
+# Gerar novo componente
+ng generate component nome-do-componente
 ```
 
-## Running end-to-end tests
+## Integração com a API
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-# mirante-da-lagoa-WEB
+O frontend consome a API do projeto `mirante-da-lagoa-API`. A URL base está configurada em `src/environments/environment.ts` (padrão: `http://localhost:8080`).
