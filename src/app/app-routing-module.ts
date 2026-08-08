@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: 'obrigacoes', canActivate: [AuthGuard], data: { roles: ['ADMIN', 'SINDICO'] }, loadChildren: () => import('./obrigacoes/obrigacoes-module').then(m => m.ObrigacoesModule) },
   { path: 'moradores', canActivate: [AuthGuard], data: { blockedRoles: ['MORADOR'] }, loadChildren: () => import('./moradores/moradores-module').then(m => m.MoradoresModule) },
   { path: 'eventos', canActivate: [AuthGuard], loadChildren: () => import('./eventos/eventos-module').then(m => m.EventosModule) },
+  { path: 'parametros', canActivate: [AuthGuard], data: { roles: ['ADMIN'] }, loadChildren: () => import('./parametros/parametros-module').then(m => m.ParametrosModule) },
   { path: '**', redirectTo: 'login' }
 ];
 

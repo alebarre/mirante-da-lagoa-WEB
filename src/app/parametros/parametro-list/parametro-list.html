@@ -1,0 +1,26 @@
+<div class="page-header">
+  <h2><i class="fas fa-percentage"></i> Parâmetros de Encargos</h2>
+  <p>Percentuais aplicados sobre o salário dos funcionários CLT.</p>
+</div>
+
+<div *ngIf="erro" class="alert alert-error">{{ erro }}</div>
+<div *ngIf="salvo" class="alert alert-success">Parâmetros salvos com sucesso.</div>
+
+<form *ngIf="!carregando" [formGroup]="form" (ngSubmit)="salvar()" class="parametro-form">
+  <div class="filters-bar">
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+      <i class="fas fa-save"></i> Salvar alterações
+    </button>
+  </div>
+
+  <div class="parametro-grid" formArrayName="itens">
+    <div *ngFor="let item of itens.controls; let i = index" [formGroupName]="i" class="parametro-card">
+      <label class="parametro-label">{{ item.value.label }}</label>
+      <input type="number" step="0.01" formControlName="valorNumerico" class="parametro-input" />
+      <span class="parametro-suffix">%</span>
+      <small class="parametro-desc">{{ item.value.descricao }}</small>
+    </div>
+  </div>
+</form>
+
+<div *ngIf="carregando" class="loading">Carregando parâmetros...</div>

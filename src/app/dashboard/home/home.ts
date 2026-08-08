@@ -24,7 +24,8 @@ export class Home implements OnInit {
     { label: 'Compromissos', path: '/compromissos', icon: 'fa-calendar-alt', roles: ['ADMIN', 'SINDICO', 'PORTARIA', 'FUNCIONARIO'] },
     { label: 'Obrigações Trabalhistas', path: '/obrigacoes', icon: 'fa-clipboard-check', roles: ['ADMIN', 'SINDICO'] },
     { label: 'Moradores', path: '/moradores', icon: 'fa-home', roles: ['ADMIN', 'SINDICO', 'PORTARIA'] },
-    { label: 'Eventos', path: '/eventos', icon: 'fa-glass-cheers', roles: ['ADMIN', 'SINDICO', 'PORTARIA', 'FUNCIONARIO', 'MORADOR'] }
+    { label: 'Eventos', path: '/eventos', icon: 'fa-glass-cheers', roles: ['ADMIN', 'SINDICO', 'PORTARIA', 'FUNCIONARIO', 'MORADOR'] },
+    { label: 'Parâmetros de Encargos', path: '/parametros', icon: 'fa-percentage', roles: ['ADMIN'] }
   ];
 
   menu: MenuItem[] = [];

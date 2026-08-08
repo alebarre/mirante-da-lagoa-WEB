@@ -83,6 +83,10 @@
       </div>
     </div>
 
+    <div class="info-calc" *ngIf="form.get('workRegime')?.value === 'CLT' && form.get('salary')?.value">
+      <i class="fas fa-magic"></i> Os valores abaixo sao calculados automaticamente com base nos percentuais cadastrados em <a routerLink="/parametros">Parametros de Encargos</a>.
+    </div>
+
     <div class="form-group">
       <label><i class="fas fa-university"></i> Dados bancarios</label>
       <input formControlName="bankAccount" />
