@@ -15,6 +15,37 @@
     <p>Nenhuma obrigação cadastrada.</p>
   </div>
 
+  <div class="dashboard-totais" *ngIf="!loading && resumo">
+    <h3><i class="fas fa-calculator"></i> Totalizadores</h3>
+    <div class="dashboard-cards">
+      <div class="dashboard-card">
+        <i class="fas fa-users"></i>
+        <span class="dashboard-value">{{ resumo.totalFuncionarios }}</span>
+        <h4>Funcionários</h4>
+      </div>
+      <div class="dashboard-card">
+        <i class="fas fa-money-bill-wave"></i>
+        <span class="dashboard-value">{{ formatCurrency(resumo.totalSalarios) }}</span>
+        <h4>Salários</h4>
+      </div>
+      <div class="dashboard-card">
+        <i class="fas fa-hand-holding-usd"></i>
+        <span class="dashboard-value">{{ formatCurrency(resumo.totalEncargosBeneficios) }}</span>
+        <h4>Encargos/benefícios</h4>
+      </div>
+      <div class="dashboard-card">
+        <i class="fas fa-piggy-bank"></i>
+        <span class="dashboard-value">{{ formatCurrency(resumo.totalProvisoes) }}</span>
+        <h4>Provisões</h4>
+      </div>
+      <div class="dashboard-card highlight">
+        <i class="fas fa-coins"></i>
+        <span class="dashboard-value">{{ formatCurrency(resumo.custoTotalMensal) }}</span>
+        <h4>Custo total mensal</h4>
+      </div>
+    </div>
+  </div>
+
   <div class="filters-bar" *ngIf="!loading && items.length > 0">
     <div class="filter-group search">
       <i class="fas fa-search"></i>
@@ -60,32 +91,6 @@
         <div class="info-row">
           <span class="info-label"><i class="fas fa-user-tie"></i> Responsável</span>
           <span class="info-value">{{ item.responsible || '-' }}</span>
-        </div>
-      </div>
-
-      <div class="resumo-totais" *ngIf="resumo" (click)="$event.stopPropagation()">
-        <span class="totais-titulo"><i class="fas fa-calculator"></i> Totalizadores</span>
-        <div class="totais-grid">
-          <div class="totais-item">
-            <span class="totais-label">Funcionários</span>
-            <span class="totais-value">{{ resumo.totalFuncionarios }}</span>
-          </div>
-          <div class="totais-item">
-            <span class="totais-label">Salários</span>
-            <span class="totais-value">{{ formatCurrency(resumo.totalSalarios) }}</span>
-          </div>
-          <div class="totais-item">
-            <span class="totais-label">Encargos/benefícios</span>
-            <span class="totais-value">{{ formatCurrency(resumo.totalEncargosBeneficios) }}</span>
-          </div>
-          <div class="totais-item">
-            <span class="totais-label">Provisões</span>
-            <span class="totais-value">{{ formatCurrency(resumo.totalProvisoes) }}</span>
-          </div>
-          <div class="totais-item totais-destaque">
-            <span class="totais-label">Custo total mensal</span>
-            <span class="totais-value">{{ formatCurrency(resumo.custoTotalMensal) }}</span>
-          </div>
         </div>
       </div>
 
